@@ -1,1 +1,1 @@
-from moving.moving import Moving
+from .moving import Moving
