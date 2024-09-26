@@ -1,5 +1,6 @@
 import pygame
 from sys import exit
+from state import PlayerState
 from sprite import Animation
 from utils import Character
 from moving import Moving
@@ -13,17 +14,18 @@ pygame.display.set_caption('Pyghterz')
 
 FPS = 60
 clock = pygame.time.Clock()
-animation = Animation(Character.RYU, screen)
-moving = Moving()
-
-img = pygame.image.load("C:\\Python\\Pyghterz\\assets\\images\\sprites\\characters\\RYU\\IDLE\\0.png")
+sprite_scale = 2.0
+animation_speed = 0.2
+player_state = PlayerState()
+animation = Animation(Character.RYU, sprite_scale, animation_speed, screen, player_state)
+moving = Moving(player_state)
 
 
 def game_loop():
     running = True
     while running:
         for event in pygame.event.get():
-            delta_time = clock.get_time()
+            delta_time = clock.tick(FPS) / 1000
             moving.update(delta_time)
             if event.type == pygame.QUIT:
                 running = False
@@ -32,8 +34,7 @@ def game_loop():
                     running = False
 
         screen.fill((0, 0, 0,))
-        screen.blit(img, (moving.position_x, moving.position_y))
-        animation.render(clock.get_time())
+        animation.render(moving.position_x, moving.position_y)
         pygame.display.flip()
         clock.tick(FPS)
     pygame.quit()
