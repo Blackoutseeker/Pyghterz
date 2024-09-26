@@ -1,5 +1,7 @@
 import pygame
 from sys import exit
+from sprite import Animation
+from utils import Character
 from moving import Moving
 
 pygame.init()
@@ -7,10 +9,11 @@ pygame.init()
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('Pygtherz')
+pygame.display.set_caption('Pyghterz')
 
 FPS = 60
 clock = pygame.time.Clock()
+animation = Animation(Character.RYU, screen)
 moving = Moving()
 
 img = pygame.image.load("C:\\Python\\Pyghterz\\assets\\images\\sprites\\characters\\RYU\\IDLE\\0.png")
@@ -30,6 +33,7 @@ def game_loop():
 
         screen.fill((0, 0, 0,))
         screen.blit(img, (moving.position_x, moving.position_y))
+        animation.render(clock.get_time())
         pygame.display.flip()
         clock.tick(FPS)
     pygame.quit()
