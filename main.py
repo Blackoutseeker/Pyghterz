@@ -3,7 +3,7 @@ from sys import exit
 from state import PlayerState
 from sprite import Animation
 from utils import Character
-from input import Moving
+from input import Movement
 
 pygame.init()
 
@@ -18,7 +18,7 @@ sprite_scale = 2.0
 animation_speed = 0.2
 player_state = PlayerState()
 animation = Animation(Character.RYU, sprite_scale, animation_speed, screen, player_state)
-moving = Moving(player_state)
+movement = Movement(player_state)
 
 
 def game_loop():
@@ -33,8 +33,8 @@ def game_loop():
                     running = False
 
         screen.fill((0, 0, 0,))
-        animation.render(moving.position_x, moving.position_y)
-        moving.update()
+        movement.update()
+        animation.render(movement.position_x, movement.position_y)
         pygame.display.flip()
     pygame.quit()
     exit()

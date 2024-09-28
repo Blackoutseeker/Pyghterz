@@ -5,7 +5,7 @@ from utils import PlayerAction
 speed = 8
 
 
-class Moving:
+class Movement:
     def __init__(self, player_state: PlayerState):
         self.position_x = 0
         self.position_y = 0
