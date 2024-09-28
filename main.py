@@ -24,19 +24,18 @@ moving = Moving(player_state)
 def game_loop():
     running = True
     while running:
+        clock.tick(FPS)
         for event in pygame.event.get():
-            delta_time = clock.tick(FPS) / 1000
-            moving.update(delta_time)
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
 
+        moving.update()
         screen.fill((0, 0, 0,))
         animation.render(moving.position_x, moving.position_y)
         pygame.display.flip()
-        clock.tick(FPS)
     pygame.quit()
     exit()
 
