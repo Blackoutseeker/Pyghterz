@@ -3,7 +3,7 @@ from sys import exit
 from state import PlayerState
 from sprite import Animation
 from utils import Character
-from moving import Moving
+from input import Moving
 
 pygame.init()
 
@@ -12,8 +12,8 @@ SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Pyghterz')
 
-FPS = 60
 clock = pygame.time.Clock()
+FPS = 60
 sprite_scale = 2.0
 animation_speed = 0.2
 player_state = PlayerState()
@@ -32,9 +32,9 @@ def game_loop():
                 if event.key == pygame.K_ESCAPE:
                     running = False
 
-        moving.update()
         screen.fill((0, 0, 0,))
         animation.render(moving.position_x, moving.position_y)
+        moving.update()
         pygame.display.flip()
     pygame.quit()
     exit()
