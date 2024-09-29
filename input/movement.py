@@ -1,5 +1,6 @@
 import pygame
 from state import PlayerState
+from .keymap import Keymap
 from utils import PlayerAction
 
 speed = 8
@@ -7,21 +8,22 @@ speed = 8
 
 class Movement:
     def __init__(self, player_state: PlayerState):
+        self._player_state: PlayerState = player_state
+        self._player_key = Keymap.Player1
         self.position_x = 0
         self.position_y = 0
-        self.player_state: PlayerState = player_state
 
     def update(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
+        if keys[self._player_key.JUMP.value]:
             self.position_y -= speed
-        elif keys[pygame.K_s]:
+        elif keys[self._player_key.CROUCH.value]:
             self.position_y += speed
-        elif keys[pygame.K_a]:
+        elif keys[self._player_key.BACKWARD.value]:
             self.position_x -= speed
-            self.player_state.set_player_action(PlayerAction.MOVE_BACKWARD)
-        elif keys[pygame.K_d]:
+            self._player_state.set_player_action(PlayerAction.MOVE_BACKWARD)
+        elif keys[self._player_key.FORWARD.value]:
             self.position_x += speed
-            self.player_state.set_player_action(PlayerAction.MOVE_FORWARD)
+            self._player_state.set_player_action(PlayerAction.MOVE_FORWARD)
         else:
-            self.player_state.set_player_action(PlayerAction.IDLE)
+            self._player_state.set_player_action(PlayerAction.IDLE)
