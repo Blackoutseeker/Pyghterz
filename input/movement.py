@@ -1,15 +1,14 @@
 import pygame
 from state import PlayerState
-from .keymap import Keymap
 from utils import PlayerAction
 
 speed = 8
 
 
 class Movement:
-    def __init__(self, player_state: PlayerState):
+    def __init__(self, player_state: PlayerState, player_key):
         self._player_state: PlayerState = player_state
-        self._player_key = Keymap.Player1
+        self._player_key = player_key
         self.position_x = 0
         self.position_y = 0
 
