@@ -4,6 +4,7 @@ from state import PlayerState
 from sprite import Animation
 from utils import Character
 from input import Movement
+from input import Keymap
 
 pygame.init()
 
@@ -16,9 +17,14 @@ clock = pygame.time.Clock()
 FPS = 60
 sprite_scale = 2.0
 animation_speed = 0.2
-player_state = PlayerState()
-animation = Animation(Character.RYU, sprite_scale, animation_speed, screen, player_state)
-movement = Movement(player_state)
+player1_state = PlayerState()
+player2_state = PlayerState()
+
+animation1 = Animation(Character.RYU, sprite_scale, animation_speed, screen, player1_state)
+animation2 = Animation(Character.RYU, sprite_scale, animation_speed, screen, player2_state)
+
+movement1 = Movement(player1_state, Keymap.Player1)
+movement2 = Movement(player2_state, Keymap.Player2)
 
 
 def game_loop():
@@ -33,8 +39,10 @@ def game_loop():
                     running = False
 
         screen.fill((0, 0, 0,))
-        movement.update()
-        animation.render(movement.position_x, movement.position_y)
+        movement1.update()
+        movement2.update()
+        animation1.render(movement1.position_x, movement1.position_y)
+        animation2.render(movement2.position_x, movement2.position_y)
         pygame.display.flip()
     pygame.quit()
     exit()
