@@ -39,10 +39,13 @@ def game_loop():
                     running = False
 
         screen.fill((0, 0, 0,))
+
         movement1.update()
         movement2.update()
-        animation1.render(movement1.position_x, movement1.position_y)
-        animation2.render(movement2.position_x, movement2.position_y)
+
+        animation1.render(movement1.get_position_x(), movement1.get_position_y())
+        animation2.render(movement2.get_position_x(), movement2.get_position_y())
+
         pygame.display.flip()
         clock.tick(FPS)
     pygame.quit()
