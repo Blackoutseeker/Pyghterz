@@ -17,6 +17,7 @@ clock = pygame.time.Clock()
 FPS = 60
 sprite_scale = 2.0
 animation_speed = 0.2
+
 player1_state = PlayerState()
 player2_state = PlayerState()
 
@@ -30,7 +31,6 @@ movement2 = Movement(player2_state, Keymap.Player2)
 def game_loop():
     running = True
     while running:
-        clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -44,6 +44,7 @@ def game_loop():
         animation1.render(movement1.position_x, movement1.position_y)
         animation2.render(movement2.position_x, movement2.position_y)
         pygame.display.flip()
+        clock.tick(FPS)
     pygame.quit()
     exit()
 
