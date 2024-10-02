@@ -4,7 +4,6 @@ from state import PlayerState
 from sprite import Animation
 from utils import Character
 from input import Movement
-from input import Keymap
 
 pygame.init()
 
@@ -24,8 +23,8 @@ player2_state = PlayerState()
 animation1 = Animation(Character.RYU, sprite_scale, animation_speed, screen, player1_state)
 animation2 = Animation(Character.RYU, sprite_scale, animation_speed, screen, player2_state)
 
-movement1 = Movement(player1_state, Keymap.Player1)
-movement2 = Movement(player2_state, Keymap.Player2)
+movement1 = Movement(player1_state)
+movement2 = Movement(player2_state, True)
 
 
 def game_loop():

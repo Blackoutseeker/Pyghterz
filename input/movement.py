@@ -1,14 +1,18 @@
-import pygame
+from pygame.key import get_pressed
 from state import PlayerState
+from .keymap import Keymap
 from utils import PlayerAction
 
 speed = 8
 
 
 class Movement:
-    def __init__(self, player_state: PlayerState, player_key):
+    def __init__(self, player_state: PlayerState, is_second_player: bool = False):
         self._player_state: PlayerState = player_state
-        self._player_key = player_key
+        self._is_first_player: bool = is_second_player
+        self._player_key = Keymap.Player1
+        if is_second_player:
+            self._player_key = Keymap.Player2
         self._position_x: float = 0
         self._position_y: float = 0
 
@@ -19,7 +23,7 @@ class Movement:
         return self._position_y
 
     def update(self):
-        keys = pygame.key.get_pressed()
+        keys = get_pressed()
         is_player_attacking: bool = self._player_state.get_is_attacking()
         if is_player_attacking is False:
             if keys[self._player_key.JUMP.value]:
