@@ -1,3 +1,3 @@
 from .movement import Movement
-from .keymap import Keymap
 
+__all__ = ['Movement']
