@@ -33,6 +33,11 @@ class Animation:
     def render(self, position_x: float, position_y: float):
         self._sprite_index += self.speed
         current_sprites: List[Surface] = self.sprites[self.player_state.get_player_action().name]
+        is_player_attacking: bool = self.player_state.get_is_attacking()
+        if is_player_attacking is True:
+            if int(self._sprite_index) >= len(current_sprites):
+                self.player_state.set_is_attacking(False)
+                self._sprite_index = 0
         if self._sprite_index >= len(current_sprites):
             self._sprite_index = 0
         self.screen.blit(current_sprites[int(self._sprite_index)], (position_x, position_y))
