@@ -13,7 +13,9 @@ class Scenery:
 
     def _load_scenery_sprites(self) -> List[Surface]:
         sprites: List[Surface] = []
-        sprites_path: str = 'C:\\Python\\Pyghterz\\assets\\images\\sprites\\stages\\KEN'
+        base_path = path.dirname(path.dirname(__file__))
+        sprites_path: str = 'assets/images/sprites/stages/KEN'
+        sprites_path = path.join(base_path, sprites_path)
         files: List[str] = listdir(sprites_path)
         for file in files:
             sprite: Surface = image.load(path.join(sprites_path, file))
