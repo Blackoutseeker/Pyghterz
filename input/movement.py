@@ -25,6 +25,7 @@ class Movement:
     def update(self):
         keys = get_pressed()
         is_player_attacking: bool = self._player_state.get_is_attacking()
+        player_action: PlayerAction = PlayerAction.IDLE
         if is_player_attacking is False:
             if keys[self._player_key.JUMP.value]:
                 self._position_y -= speed
@@ -32,28 +33,31 @@ class Movement:
                 self._position_y += speed
             elif keys[self._player_key.BACKWARD.value]:
                 self._position_x -= speed
-                self._player_state.set_player_action(PlayerAction.MOVE_BACKWARD)
+                player_action = PlayerAction.MOVE_BACKWARD
+                if self._player_state.get_is_facing_right() is not True:
+                    player_action = PlayerAction.MOVE_FORWARD
             elif keys[self._player_key.FORWARD.value]:
                 self._position_x += speed
-                self._player_state.set_player_action(PlayerAction.MOVE_FORWARD)
+                player_action = PlayerAction.MOVE_FORWARD
+                if self._player_state.get_is_facing_right() is not True:
+                    player_action = PlayerAction.MOVE_BACKWARD
 
             elif keys[self._player_key.WEAK_PUNCH.value]:
                 self._player_state.set_is_attacking(True)
-                self._player_state.set_player_action(PlayerAction.WEAK_PUNCH)
+                player_action = PlayerAction.WEAK_PUNCH
             elif keys[self._player_key.MEDIUM_PUNCH.value]:
                 self._player_state.set_is_attacking(True)
-                self._player_state.set_player_action(PlayerAction.MEDIUM_PUNCH)
+                player_action = PlayerAction.MEDIUM_PUNCH
             elif keys[self._player_key.HIGH_PUNCH.value]:
                 self._player_state.set_is_attacking(True)
-                self._player_state.set_player_action(PlayerAction.HIGH_PUNCH)
+                player_action = PlayerAction.HIGH_PUNCH
             elif keys[self._player_key.WEAK_KICK.value]:
                 self._player_state.set_is_attacking(True)
-                self._player_state.set_player_action(PlayerAction.WEAK_KICK)
+                player_action = PlayerAction.WEAK_KICK
             elif keys[self._player_key.MEDIUM_KICK.value]:
                 self._player_state.set_is_attacking(True)
-                self._player_state.set_player_action(PlayerAction.MEDIUM_KICK)
+                player_action = PlayerAction.MEDIUM_KICK
             elif keys[self._player_key.HIGH_KICK.value]:
                 self._player_state.set_is_attacking(True)
-                self._player_state.set_player_action(PlayerAction.HIGH_KICK)
-            else:
-                self._player_state.set_player_action(PlayerAction.IDLE)
+                player_action = PlayerAction.HIGH_KICK
+            self._player_state.set_player_action(player_action)
