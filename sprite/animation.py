@@ -40,4 +40,7 @@ class Animation:
                 self._sprite_index = 0
         if self._sprite_index >= len(current_sprites):
             self._sprite_index = 0
-        self._screen.blit(current_sprites[int(self._sprite_index)], (position_x, position_y))
+        current_sprite: Surface = current_sprites[int(self._sprite_index)]
+        if self._player_state.get_is_facing_right() is not True:
+            current_sprite = transform.flip(current_sprite, True, False)
+        self._screen.blit(current_sprite, (position_x, position_y))
