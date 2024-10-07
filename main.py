@@ -29,6 +29,17 @@ movement1 = Movement(player1_state)
 movement2 = Movement(player2_state, True)
 
 
+def handle_players_flip():
+    player1_x = movement1.get_position_x()
+    player2_x = movement2.get_position_x()
+    if player1_x < player2_x:
+        player1_state.set_is_facing_right(True)
+        player2_state.set_is_facing_right(False)
+    else:
+        player1_state.set_is_facing_right(False)
+        player2_state.set_is_facing_right(True)
+
+
 def game_loop():
     running = True
     while running:
@@ -45,6 +56,7 @@ def game_loop():
         movement2.update()
 
         scenery.render(0, 0)
+        handle_players_flip()
 
         animation1.render(movement1.get_position_x(), movement1.get_position_y())
         animation2.render(movement2.get_position_x(), movement2.get_position_y())
