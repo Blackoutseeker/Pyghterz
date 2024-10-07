@@ -5,6 +5,7 @@ class PlayerState:
     def __init__(self):
         self._player_action: PlayerAction = PlayerAction.IDLE
         self._is_attacking: bool = False
+        self._is_facing_right: bool = True
 
     def get_player_action(self) -> PlayerAction:
         return self._player_action
@@ -17,3 +18,9 @@ class PlayerState:
 
     def set_is_attacking(self, is_attacking: bool):
         self._is_attacking = is_attacking
+
+    def get_is_facing_right(self) -> bool:
+        return self._is_facing_right
+
+    def set_is_facing_right(self, is_facing_right: bool):
+        self._is_facing_right = is_facing_right
