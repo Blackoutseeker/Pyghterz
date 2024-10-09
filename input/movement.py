@@ -13,8 +13,10 @@ class Movement:
         self._player_key = Keymap.Player1
         if is_second_player:
             self._player_key = Keymap.Player2
-        self._position_x: float = 0
-        self._position_y: float = 0
+        self._position_x: float = 80
+        if is_second_player:
+            self._position_x = 330
+        self._position_y: float = 280
 
     def get_position_x(self) -> float:
         return self._position_x
@@ -28,9 +30,11 @@ class Movement:
         player_action: PlayerAction = PlayerAction.IDLE
         if is_player_attacking is False:
             if keys[self._player_key.JUMP.value]:
-                self._position_y -= speed
+                # self._position_y -= speed
+                pass
             elif keys[self._player_key.CROUCH.value]:
-                self._position_y += speed
+                # self._position_y += speed
+                pass
             elif keys[self._player_key.BACKWARD.value]:
                 self._position_x -= speed
                 player_action = PlayerAction.MOVE_BACKWARD
