@@ -44,20 +44,26 @@ class Movement:
 
             elif keys[self._player_key.WEAK_PUNCH.value]:
                 self._player_state.set_is_attacking(True)
+                self._player_state.reset_animation_attributes()
                 player_action = PlayerAction.WEAK_PUNCH
             elif keys[self._player_key.MEDIUM_PUNCH.value]:
                 self._player_state.set_is_attacking(True)
+                self._player_state.reset_animation_attributes()
                 player_action = PlayerAction.MEDIUM_PUNCH
             elif keys[self._player_key.HIGH_PUNCH.value]:
                 self._player_state.set_is_attacking(True)
+                self._player_state.reset_animation_attributes()
                 player_action = PlayerAction.HIGH_PUNCH
             elif keys[self._player_key.WEAK_KICK.value]:
                 self._player_state.set_is_attacking(True)
+                self._player_state.reset_animation_attributes()
                 player_action = PlayerAction.WEAK_KICK
             elif keys[self._player_key.MEDIUM_KICK.value]:
                 self._player_state.set_is_attacking(True)
+                self._player_state.reset_animation_attributes()
                 player_action = PlayerAction.MEDIUM_KICK
             elif keys[self._player_key.HIGH_KICK.value]:
                 self._player_state.set_is_attacking(True)
+                self._player_state.reset_animation_attributes()
                 player_action = PlayerAction.HIGH_KICK
             self._player_state.set_player_action(player_action)

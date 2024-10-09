@@ -13,7 +13,7 @@ pygame.display.set_caption('Pyghterz')
 clock = pygame.time.Clock()
 FPS = 60
 sprite_scale = 2.0
-animation_speed = 0.2
+animation_speed = 70
 
 scenery_scale = 3.0
 scenery_speed = 0.06
