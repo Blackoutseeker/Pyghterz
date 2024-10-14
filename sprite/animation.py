@@ -43,6 +43,7 @@ class Animation:
         if sprite_index >= len(current_sprites):
             if is_player_attacking:
                 self._player_state.set_is_attacking(False)
+                current_sprites = self._sprites[PlayerAction.IDLE.name]
             self._player_state.reset_animation_attributes()
             sprite_index = 0
 
