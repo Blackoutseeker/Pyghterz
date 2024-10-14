@@ -1,7 +1,7 @@
 from utils import Character, PlayerAction
 from state import PlayerState
 from os import path, listdir
-from pygame import image, Surface, transform
+from pygame import image, Surface, transform, Rect
 from pygame.time import get_ticks
 from typing import List
 
@@ -30,9 +30,10 @@ class Animation:
             sprites.append(scaled_sprite)
         return sprites
 
-    def render(self, position_x: float, position_y: float):
+    def render(self, position_x: float, position_y: float, viewport: Rect):
         sprite_index: int = self._player_state.get_sprite_index()
         current_sprites: List[Surface] = self._sprites[self._player_state.get_player_action().name]
+
         if get_ticks() - self._player_state.get_animation_update_time() > self._speed:
             sprite_index += 1
             self._player_state.set_sprite_index(sprite_index)
@@ -40,6 +41,7 @@ class Animation:
 
         sprite_index = self._player_state.get_sprite_index()
         is_player_attacking: bool = self._player_state.get_is_attacking()
+
         if sprite_index >= len(current_sprites):
             if is_player_attacking:
                 self._player_state.set_is_attacking(False)
@@ -47,6 +49,11 @@ class Animation:
             sprite_index = 0
 
         current_sprite: Surface = current_sprites[sprite_index]
-        if self._player_state.get_is_facing_right() is not True:
+
+        if not self._player_state.get_is_facing_right():
             current_sprite = transform.flip(current_sprite, True, False)
-        self._screen.blit(current_sprite, (position_x, position_y))
+
+        adjusted_x = position_x - viewport.left
+        adjusted_y = position_y - viewport.top
+
+        self._screen.blit(current_sprite, (adjusted_x, adjusted_y))
