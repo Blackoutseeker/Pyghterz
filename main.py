@@ -1,8 +1,8 @@
 import pygame
 from sys import exit
-from state import PlayerState, Scenery
+from state import PlayerState, Scenery, Viewport
 from sprite import Animation
-from utils import Character, Dimensions
+from utils import Character, Dimensions, Config
 from input import Movement
 
 pygame.init()
@@ -10,15 +10,15 @@ pygame.init()
 screen = pygame.display.set_mode((Dimensions.SCREEN_WIDTH.value, Dimensions.SCREEN_HEIGHT.value))
 pygame.display.set_caption('Pyghterz')
 
+viewport = Viewport(screen)
 clock = pygame.time.Clock()
-FPS = 60
-sprite_scale = 2.4
-animation_speed = 70
 
-scenery_scale = 3.0
-scenery_speed = 0.06
+sprite_scale = Config.SPRITE_SCALE.value
+animation_speed = Config.ANIMATION_SPEED.value
+scenery_scale = Config.SCENERY_SCALE.value
+scenery_speed = Config.SCENERY_SPEED.value
+
 scenery = Scenery(scenery_scale, scenery_speed, screen)
-
 player1_state = PlayerState()
 player2_state = PlayerState()
 
@@ -54,15 +54,20 @@ def game_loop():
 
         movement1.update()
         movement2.update()
+        
+        viewport.update(movement1.get_position_x(), movement2.get_position_x(), Dimensions.WORLD_WIDTH.value)
 
-        scenery.render(0, 0)
+        scenery.render(-viewport.get_viewport().left, 0, viewport)
+
         handle_players_flip()
 
-        animation1.render(movement1.get_position_x(), movement1.get_position_y())
-        animation2.render(movement2.get_position_x(), movement2.get_position_y())
+        animation1.render(movement1.get_position_x() - viewport.get_viewport().left, movement1.get_position_y(),
+                          viewport.get_viewport())
+        animation2.render(movement2.get_position_x() - viewport.get_viewport().left, movement2.get_position_y(),
+                          viewport.get_viewport())
 
         pygame.display.flip()
-        clock.tick(FPS)
+        clock.tick(Config.FPS.value)
     pygame.quit()
     exit()
 
