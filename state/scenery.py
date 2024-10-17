@@ -24,10 +24,12 @@ class Scenery:
             sprites.append(scaled_sprite)
         return sprites
 
-    def render(self, position_x: float, position_y: float):
+    def render(self, position_x: float, position_y: float, viewport: 'Viewport'):
         self._sprite_index += self._speed
         if self._sprite_index >= len(self._sprites):
             self._sprite_index = 0
 
         current_sprite: Surface = self._sprites[int(self._sprite_index)]
-        self._screen.blit(current_sprite, (position_x, position_y))
+
+        screen_position = viewport.apply(position_x, position_y)
+        self._screen.blit(current_sprite, screen_position)
