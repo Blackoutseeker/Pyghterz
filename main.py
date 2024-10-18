@@ -4,6 +4,7 @@ from state import PlayerState, Scenery, Viewport
 from sprite import Animation
 from utils import Character, Dimensions, Config
 from input import Movement
+from audio import AudioManager
 
 pygame.init()
 
@@ -27,6 +28,10 @@ animation2 = Animation(Character.RYU, sprite_scale, animation_speed, screen, pla
 
 movement1 = Movement(player1_state)
 movement2 = Movement(player2_state, True)
+
+audio_manager = AudioManager()
+audio_manager.load()
+audio_manager.play_background_music()
 
 
 def handle_players_flip():
@@ -52,9 +57,9 @@ def game_loop():
 
         screen.fill((0, 0, 0,))
 
-        movement1.update()
-        movement2.update()
-        
+        movement1.update(audio_manager)
+        movement2.update(audio_manager)
+
         viewport.update(movement1.get_position_x(), movement2.get_position_x(), Dimensions.WORLD_WIDTH.value)
 
         scenery.render(-viewport.get_viewport().left, 0, viewport)
@@ -68,6 +73,7 @@ def game_loop():
 
         pygame.display.flip()
         clock.tick(Config.FPS.value)
+    audio_manager.dispose()
     pygame.quit()
     exit()
 
