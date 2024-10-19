@@ -1,13 +1,13 @@
 from pygame import Rect, Surface
-from utils import dimentions as d
+from utils import Dimensions
 
 
 class Viewport:
     def __init__(self, screen: Surface):
         self._screen: Surface = screen
-        self._viewport: Rect = Rect(0, 0, d.Dimensions.SCREEN_WIDTH.value, d.Dimensions.SCREEN_HEIGHT.value)
-        self._world_width: int = d.Dimensions.WORLD_WIDTH.value
-        self._world_height: int = d.Dimensions.WORLD_HEIGHT.value
+        self._viewport: Rect = Rect(0, 0, Dimensions.SCREEN_WIDTH.value, Dimensions.SCREEN_HEIGHT.value)
+        self._world_width: int = Dimensions.WORLD_WIDTH.value
+        self._world_height: int = Dimensions.WORLD_HEIGHT.value
         self._left = self._viewport.left
         self._right = self._viewport.right
 

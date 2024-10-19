@@ -5,6 +5,7 @@ from sprite import Animation
 from utils import Character, Dimensions, Config
 from input import Movement
 from audio import AudioManager
+from collision import Hitbox
 
 pygame.init()
 
@@ -29,14 +30,16 @@ animation2 = Animation(Character.RYU, sprite_scale, animation_speed, screen, pla
 movement1 = Movement(player1_state)
 movement2 = Movement(player2_state, True)
 
+player1_hitbox = Hitbox(Character.RYU, screen)
+
 audio_manager = AudioManager()
 audio_manager.load()
 audio_manager.play_background_music()
 
 
 def handle_players_flip():
-    player1_x = movement1.get_position_x()
-    player2_x = movement2.get_position_x()
+    player1_x, _ = player1_state.get_player_position()
+    player2_x, _ = player2_state.get_player_position()
     if player1_x < player2_x:
         player1_state.set_is_facing_right(True)
         player2_state.set_is_facing_right(False)
@@ -59,17 +62,21 @@ def game_loop():
 
         movement1.update(audio_manager)
         movement2.update(audio_manager)
+        player1_position_x, player1_position_y = player1_state.get_player_position()
+        player2_position_x, player2_position_y = player2_state.get_player_position()
 
-        viewport.update(movement1.get_position_x(), movement2.get_position_x(), Dimensions.WORLD_WIDTH.value)
+        viewport.update(player1_position_x, player2_position_x, Dimensions.WORLD_WIDTH.value)
 
         scenery.render(-viewport.get_viewport().left, 0, viewport)
 
         handle_players_flip()
 
-        animation1.render(movement1.get_position_x() - viewport.get_viewport().left, movement1.get_position_y(),
+        animation1.render(player1_position_x - viewport.get_viewport().left, player1_position_y,
                           viewport.get_viewport())
-        animation2.render(movement2.get_position_x() - viewport.get_viewport().left, movement2.get_position_y(),
+        animation2.render(player2_position_x - viewport.get_viewport().left, player2_position_y,
                           viewport.get_viewport())
+
+        player1_hitbox.render()
 
         pygame.display.flip()
         clock.tick(Config.FPS.value)

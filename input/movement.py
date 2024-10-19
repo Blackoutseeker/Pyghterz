@@ -15,21 +15,17 @@ class Movement:
         self._player_key = Keymap.Player1
         if is_second_player:
             self._player_key = Keymap.Player2
-        self._position_x: float = 80
+        self._player_state.set_player_position_x(80)
         if is_second_player:
-            self._position_x = 330
-        self._position_y: float = 280
-
-    def get_position_x(self) -> float:
-        return self._position_x
-
-    def get_position_y(self) -> float:
-        return self._position_y
+            self._player_state.set_player_position_x(330)
+        self._player_state.set_player_position_y(280)
 
     def update(self, audio_mgr: AudioManager):
         keys = get_pressed()
         is_player_attacking: bool = self._player_state.get_is_attacking()
         player_action: PlayerAction = PlayerAction.IDLE
+        player_position_x, player_position_y = self._player_state.get_player_position()
+
         if is_player_attacking is False:
             if keys[self._player_key.JUMP.value]:
                 # self._position_y -= speed
@@ -38,12 +34,12 @@ class Movement:
                 # self._position_y += speed
                 pass
             elif keys[self._player_key.BACKWARD.value]:
-                self._position_x -= speed
+                player_position_x -= speed
                 player_action = PlayerAction.MOVE_BACKWARD
                 if self._player_state.get_is_facing_right() is not True:
                     player_action = PlayerAction.MOVE_FORWARD
             elif keys[self._player_key.FORWARD.value]:
-                self._position_x += speed
+                player_position_x += speed
                 player_action = PlayerAction.MOVE_FORWARD
                 if self._player_state.get_is_facing_right() is not True:
                     player_action = PlayerAction.MOVE_BACKWARD
@@ -79,3 +75,6 @@ class Movement:
                 player_action = PlayerAction.HIGH_KICK
                 audio_mgr.play_character_sound('ryu', SoundType.HIGH_PUNCH)
             self._player_state.set_player_action(player_action)
+
+        self._player_state.set_player_position_x(player_position_x)
+        self._player_state.set_player_position_y(player_position_y)

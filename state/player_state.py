@@ -1,10 +1,13 @@
 from utils import PlayerAction
+from typing import List
 from pygame.time import get_ticks
 
 
 class PlayerState:
     def __init__(self):
         self._player_action: PlayerAction = PlayerAction.IDLE
+        self._position_x: float = 0
+        self._position_y: float = 0
         self._is_attacking: bool = False
         self._is_facing_right: bool = True
         self._sprite_index: int = 0
@@ -15,6 +18,15 @@ class PlayerState:
 
     def set_player_action(self, player_action: PlayerAction):
         self._player_action = player_action
+
+    def get_player_position(self) -> List[float]:
+        return [self._position_x, self._position_y]
+
+    def set_player_position_x(self, position_x: float):
+        self._position_x = position_x
+
+    def set_player_position_y(self, position_y: float):
+        self._position_y = position_y
 
     def get_is_attacking(self) -> bool:
         return self._is_attacking
