@@ -30,11 +30,12 @@ animation2 = Animation(Character.RYU, sprite_scale, animation_speed, screen, pla
 movement1 = Movement(player1_state)
 movement2 = Movement(player2_state, True)
 
-player1_hitbox = Hitbox(Character.RYU, screen)
+player1_hitbox = Hitbox(Character.RYU, player1_state, Config.SPRITE_SCALE.value, screen)
+player2_hitbox = Hitbox(Character.RYU, player2_state, Config.SPRITE_SCALE.value, screen)
 
 audio_manager = AudioManager()
 audio_manager.load()
-audio_manager.play_background_music()
+# audio_manager.play_background_music()
 
 
 def handle_players_flip():
@@ -77,6 +78,7 @@ def game_loop():
                           viewport.get_viewport())
 
         player1_hitbox.render()
+        player2_hitbox.render()
 
         pygame.display.flip()
         clock.tick(Config.FPS.value)
