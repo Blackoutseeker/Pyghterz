@@ -41,10 +41,18 @@ class Animation:
 
         sprite_index = self._player_state.get_sprite_index()
         is_player_attacking: bool = self._player_state.get_is_attacking()
+        is_player_getting_hit: bool = (self._player_state.get_is_getting_weak_hit() or
+                                       self._player_state.get_is_getting_medium_hit() or
+                                       self._player_state.get_is_getting_high_hit())
 
         if sprite_index >= len(current_sprites):
             if is_player_attacking:
                 self._player_state.set_is_attacking(False)
+                current_sprites = self._sprites[PlayerAction.IDLE.name]
+            if is_player_getting_hit:
+                self._player_state.set_is_getting_weak_hit(False)
+                self._player_state.set_is_getting_medium_hit(False)
+                self._player_state.set_is_getting_high_hit(False)
                 current_sprites = self._sprites[PlayerAction.IDLE.name]
             self._player_state.reset_animation_attributes()
             sprite_index = 0
