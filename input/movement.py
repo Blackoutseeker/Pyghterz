@@ -18,15 +18,18 @@ class Movement:
         self._player_state.set_player_position_x(80)
         if is_second_player:
             self._player_state.set_player_position_x(330)
-        self._player_state.set_player_position_y(280)
+        self._player_state.set_player_position_y(180)
 
     def update(self, audio_mgr: AudioManager):
         keys = get_pressed()
         is_player_attacking: bool = self._player_state.get_is_attacking()
+        is_player_getting_hit: bool = (self._player_state.get_is_getting_weak_hit() or
+                                       self._player_state.get_is_getting_medium_hit() or
+                                       self._player_state.get_is_getting_high_hit())
         player_action: PlayerAction = PlayerAction.IDLE
         player_position_x, player_position_y = self._player_state.get_player_position()
 
-        if is_player_attacking is False:
+        if is_player_attacking is False and is_player_getting_hit is False:
             if keys[self._player_key.JUMP.value]:
                 # self._position_y -= speed
                 pass
