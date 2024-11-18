@@ -19,6 +19,12 @@ class Hitbox:
         self._render_body_hitbox()
         self._render_attack_hitbox()
 
+    def get_body_rectangle(self) -> Rect:
+        return self._body_rectangle
+
+    def get_attack_rectangle(self) -> Rect:
+        return self._attack_rectangle
+
     def _get_attack_hitboxes(self) -> dict:
         attack_hitboxes = CharacterHitbox.get_attack_hitboxes(self._character)
         return attack_hitboxes
@@ -28,7 +34,7 @@ class Hitbox:
         width = self._get_scaled_size(46)
         height = self._get_scaled_size(102)
         base_x = self._get_scaled_size(60)
-        base_y = self._get_scaled_size(22)
+        base_y = self._get_scaled_size(62)
         self._body_rectangle.update(player_position_x + base_x, player_position_y + base_y, width, height)
         draw.rect(self._screen, (0, 255, 0), self._body_rectangle, 3)
 
@@ -48,6 +54,7 @@ class Hitbox:
                 self._counter = min(current_frame, hitbox_length - 1)
 
                 attack_rectangle: Rect = attack_hitbox['rectangles'][self._counter]
+                self._current_attack_rectangle = attack_rectangle
                 is_facing_right = self._player_state.get_is_facing_right()
                 if not is_facing_right:
                     attack_rectangle = attack_hitbox['mirror_rectangles'][self._counter]
