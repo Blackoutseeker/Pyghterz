@@ -5,7 +5,7 @@ from sprite import Animation
 from utils import Character, Dimensions, Config
 from input import Movement
 from audio import AudioManager
-from collision import Hitbox
+from collision import Hitbox, Detection
 
 pygame.init()
 
@@ -32,6 +32,8 @@ movement2 = Movement(player2_state, True)
 
 player1_hitbox = Hitbox(Character.RYU, player1_state, Config.SPRITE_SCALE.value, screen)
 player2_hitbox = Hitbox(Character.RYU, player2_state, Config.SPRITE_SCALE.value, screen)
+
+detection = Detection(player1_state, player2_state)
 
 audio_manager = AudioManager()
 audio_manager.load()
@@ -79,6 +81,14 @@ def game_loop():
 
         player1_hitbox.render()
         player2_hitbox.render()
+
+        player1_body_rectangle = player1_hitbox.get_body_rectangle()
+        player1_attack_rectangle = player1_hitbox.get_attack_rectangle()
+        player2_body_rectangle = player2_hitbox.get_body_rectangle()
+        player2_attack_rectangle = player2_hitbox.get_attack_rectangle()
+
+        detection.detect_collision(player1_body_rectangle, player2_body_rectangle,
+                                   player1_attack_rectangle, player2_attack_rectangle)
 
         pygame.display.flip()
         clock.tick(Config.FPS.value)
