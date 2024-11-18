@@ -11,38 +11,38 @@ class CharacterHitbox:
                 'WEAK_PUNCH': {
                     'start_index': 1,
                     'end_index': 2,
-                    'rectangles': [Rect(100, 30, 46, 18), Rect(100, 30, 46, 18), Rect(100, 30, 46, 18)],
-                    'mirror_rectangles': [Rect(20, 30, 46, 18), Rect(20, 30, 46, 18), Rect(20, 30, 46, 18)]
+                    'rectangles': [Rect(100, 70, 46, 18), Rect(100, 70, 46, 18), Rect(100, 70, 46, 18)],
+                    'mirror_rectangles': [Rect(20, 70, 46, 18), Rect(20, 70, 46, 18), Rect(20, 70, 46, 18)]
                 },
                 'MEDIUM_PUNCH': {
                     'start_index': 3,
                     'end_index': 5,
-                    'rectangles': [Rect(100, 42, 52, 20), Rect(100, 42, 52, 20), Rect(100, 42, 52, 20)],
-                    'mirror_rectangles': [Rect(14, 42, 52, 20), Rect(14, 42, 52, 20), Rect(14, 42, 52, 20)]
+                    'rectangles': [Rect(100, 82, 52, 20), Rect(100, 82, 52, 20), Rect(100, 82, 52, 20)],
+                    'mirror_rectangles': [Rect(14, 82, 52, 20), Rect(14, 82, 52, 20), Rect(14, 82, 52, 20)]
                 },
                 'HIGH_PUNCH': {
                     'start_index': 3,
                     'end_index': 5,
-                    'rectangles': [Rect(100, 42, 52, 20), Rect(100, 42, 52, 20), Rect(100, 42, 52, 20),],
-                    'mirror_rectangles': [Rect(14, 42, 52, 20), Rect(14, 42, 52, 20), Rect(14, 42, 52, 20)]
+                    'rectangles': [Rect(100, 82, 52, 20), Rect(100, 82, 52, 20), Rect(100, 82, 52, 20),],
+                    'mirror_rectangles': [Rect(14, 82, 52, 20), Rect(14, 82, 52, 20), Rect(14, 82, 52, 20)]
                 },
                 'WEAK_KICK': {
                     'start_index': 2,
                     'end_index': 4,
-                    'rectangles': [Rect(100, 64, 56, 40), Rect(100, 64, 56, 40), Rect(100, 64, 56, 40),],
-                    'mirror_rectangles': [Rect(10, 64, 56, 40), Rect(10, 64, 56, 40), Rect(10, 64, 56, 40),]
+                    'rectangles': [Rect(100, 104, 56, 40), Rect(100, 104, 56, 40), Rect(100, 104, 56, 40),],
+                    'mirror_rectangles': [Rect(10, 104, 56, 40), Rect(10, 104, 56, 40), Rect(10, 104, 56, 40),]
                 },
                 'MEDIUM_KICK': {
                     'start_index': 3,
                     'end_index': 5,
-                    'rectangles': [Rect(100, 14, 48, 46), Rect(100, 20, 56, 42), Rect(100, 44, 54, 28),],
-                    'mirror_rectangles': [Rect(18, 14, 48, 46), Rect(10, 20, 56, 42), Rect(12, 44, 54, 28),],
+                    'rectangles': [Rect(100, 54, 48, 46), Rect(100, 60, 56, 42), Rect(100, 84, 54, 28),],
+                    'mirror_rectangles': [Rect(18, 54, 48, 46), Rect(10, 60, 56, 42), Rect(12, 84, 54, 28),],
                 },
                 'HIGH_KICK': {
                     'start_index': 3,
                     'end_index': 5,
-                    'rectangles': [Rect(100, 14, 48, 46), Rect(100, 20, 56, 42), Rect(100, 44, 54, 28)],
-                    'mirror_rectangles': [Rect(18, 14, 48, 46), Rect(10, 20, 56, 42), Rect(12, 44, 54, 28)]
+                    'rectangles': [Rect(100, 54, 48, 46), Rect(100, 60, 56, 42), Rect(100, 84, 54, 28)],
+                    'mirror_rectangles': [Rect(18, 54, 48, 46), Rect(10, 60, 56, 42), Rect(12, 84, 54, 28)]
                 }
             }
 
