@@ -10,6 +10,9 @@ class PlayerState:
         self._position_y: float = 0
         self._is_attacking: bool = False
         self._is_facing_right: bool = True
+        self._is_getting_weak_hit: bool = False
+        self._is_getting_medium_hit: bool = False
+        self._is_getting_high_hit: bool = False
         self._sprite_index: int = 0
         self._animation_update_time: float = 0
 
@@ -39,6 +42,24 @@ class PlayerState:
 
     def set_is_facing_right(self, is_facing_right: bool):
         self._is_facing_right = is_facing_right
+
+    def get_is_getting_weak_hit(self) -> bool:
+        return self._is_getting_weak_hit
+
+    def set_is_getting_weak_hit(self, is_getting_weak_hit: bool):
+        self._is_getting_weak_hit = is_getting_weak_hit
+
+    def get_is_getting_medium_hit(self) -> bool:
+        return self._is_getting_medium_hit
+
+    def set_is_getting_medium_hit(self, is_getting_medium_hit: bool):
+        self._is_getting_medium_hit = is_getting_medium_hit
+
+    def get_is_getting_high_hit(self) -> bool:
+        return self._is_getting_high_hit
+
+    def set_is_getting_high_hit(self, is_getting_strong_hit: bool):
+        self._is_getting_high_hit = is_getting_strong_hit
 
     def get_sprite_index(self) -> int:
         return self._sprite_index
