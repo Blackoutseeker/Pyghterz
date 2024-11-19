@@ -54,6 +54,20 @@ class Game:
             self._player1_state.set_is_facing_right(False)
             self._player2_state.set_is_facing_right(True)
 
+    def _handle_players_z_axis(self, player1_position_x: float, player2_position_x: float,
+                               player1_position_y: float, player2_position_y: float):
+        is_player1_attacking = self._player1_state.get_is_attacking()
+        if is_player1_attacking:
+            self._animation2.render(player2_position_x - self._viewport.get_viewport().left, player2_position_y,
+                                    self._viewport.get_viewport())
+            self._animation1.render(player1_position_x - self._viewport.get_viewport().left, player1_position_y,
+                                    self._viewport.get_viewport())
+        else:
+            self._animation1.render(player1_position_x - self._viewport.get_viewport().left, player1_position_y,
+                                    self._viewport.get_viewport())
+            self._animation2.render(player2_position_x - self._viewport.get_viewport().left, player2_position_y,
+                                    self._viewport.get_viewport())
+
     def run(self):
         running = True
         while running:
@@ -76,11 +90,7 @@ class Game:
             self._scenery.render(-self._viewport.get_viewport().left, 0, self._viewport)
 
             self._handle_players_flip()
-
-            self._animation1.render(player1_position_x - self._viewport.get_viewport().left, player1_position_y,
-                              self._viewport.get_viewport())
-            self._animation2.render(player2_position_x - self._viewport.get_viewport().left, player2_position_y,
-                              self._viewport.get_viewport())
+            self._handle_players_z_axis(player1_position_x, player2_position_x, player1_position_y, player2_position_y)
 
             self._player1_hitbox.render()
             self._player2_hitbox.render()
