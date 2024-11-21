@@ -1,5 +1,6 @@
 from pygame import Rect
 from state import PlayerState
+from typing import List
 from utils import PlayerAction
 
 
@@ -19,25 +20,34 @@ class Detection:
         is_player1_attacking: bool = player1_attack_rect.colliderect(player2_body_rect)
         is_player2_attacking: bool = player2_attack_rect.colliderect(player1_body_rect)
         if is_player1_attacking or is_player2_attacking:
-            player_state: PlayerState = self._player2_state
-            if is_player2_attacking:
-                player_state = self._player1_state
+            player_states: List[PlayerState] = [self._player2_state]
+            is_both_players_attacking: bool = is_player1_attacking and is_player2_attacking
+            if is_both_players_attacking:
+                player_states.append(self._player1_state)
+                for player_state in player_states:
+                    player_state.set_is_attacking(False)
+                    player_state.set_is_getting_weak_hit(True)
+                    player_state.set_player_action(PlayerAction.WEAK_HIT)
 
-            is_player_not_getting_hit: bool = (not player_state.get_is_getting_weak_hit() or
-                                               not player_state.get_is_getting_medium_hit() or
-                                               not player_state.get_is_getting_high_hit())
+            for player_state in player_states:
+                if is_player2_attacking:
+                    player_state = self._player1_state
 
-            if is_player_not_getting_hit:
-                player_state.set_is_getting_weak_hit(True)
-                player_state.set_player_action(PlayerAction.WEAK_HIT)
-                player_state.reset_animation_attributes()
+                is_player_not_getting_hit: bool = (not player_state.get_is_getting_weak_hit() or
+                                                   not player_state.get_is_getting_medium_hit() or
+                                                   not player_state.get_is_getting_high_hit())
 
-            player_attacking_previous_x, _ = player_state.get_player_position()
-            is_player_getting_hit_facing_right: bool = player_state.get_is_facing_right()
-            new_player_getting_hit_position: float = player_attacking_previous_x + self._hit_speed
-            if is_player_getting_hit_facing_right:
-                new_player_getting_hit_position = player_attacking_previous_x - self._hit_speed
-            player_state.set_player_position_x(new_player_getting_hit_position)
+                if is_player_not_getting_hit:
+                    player_state.set_is_getting_weak_hit(True)
+                    player_state.set_player_action(PlayerAction.WEAK_HIT)
+                    player_state.reset_animation_attributes()
+
+                player_attacking_previous_x, _ = player_state.get_player_position()
+                is_player_getting_hit_facing_right: bool = player_state.get_is_facing_right()
+                new_player_getting_hit_position: float = player_attacking_previous_x + self._hit_speed
+                if is_player_getting_hit_facing_right:
+                    new_player_getting_hit_position = player_attacking_previous_x - self._hit_speed
+                player_state.set_player_position_x(new_player_getting_hit_position)
 
     def _detect_body_collision(self, player1_body_rect: Rect, player2_body_rect: Rect):
         if player1_body_rect.colliderect(player2_body_rect):

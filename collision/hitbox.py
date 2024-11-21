@@ -39,8 +39,13 @@ class Hitbox:
         draw.rect(self._screen, (0, 255, 0), self._body_rectangle, 3)
 
     def _render_attack_hitbox(self):
-        is_player_attacking = self._player_state.get_is_attacking()
-        if is_player_attacking:
+        is_player_attacking: bool = self._player_state.get_is_attacking()
+        is_player_getting_hit: bool = (self._player_state.get_is_getting_weak_hit() or
+                                       self._player_state.get_is_getting_medium_hit() or
+                                       self._player_state.get_is_getting_high_hit())
+        if is_player_getting_hit:
+            self._dismiss_attack_rectangle()
+        if is_player_attacking and not is_player_getting_hit:
             sprite_index = self._player_state.get_sprite_index()
             player_action = self._player_state.get_player_action()
             attack_hitbox = self._attack_hitboxes[player_action.name]
