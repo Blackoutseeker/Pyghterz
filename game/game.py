@@ -12,7 +12,9 @@ class Game:
     def __init__(self):
         pygame.init()
 
-        self._screen = pygame.display.set_mode((Dimensions.SCREEN_WIDTH.value, Dimensions.SCREEN_HEIGHT.value))
+        self._display_flags = pygame.SCALED | pygame.RESIZABLE
+        self._screen = pygame.display.set_mode((Dimensions.SCREEN_WIDTH.value, Dimensions.SCREEN_HEIGHT.value),
+                                               flags=self._display_flags, vsync=1)
         pygame.display.set_caption('Pyghterz')
 
         self._viewport = Viewport(self._screen)
@@ -70,6 +72,7 @@ class Game:
 
     def run(self):
         running = True
+        self._screen.fill((0, 0, 0))
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -78,7 +81,6 @@ class Game:
                     if event.key == pygame.K_ESCAPE:
                         running = False
 
-            self._screen.fill((0, 0, 0,))
 
             self._movement1.update(self._audio_manager)
             self._movement2.update(self._audio_manager)
