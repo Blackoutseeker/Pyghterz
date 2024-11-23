@@ -1,4 +1,4 @@
-from utils import Character, PlayerAction
+from utils import Character, PlayerAction, Config
 from typing import List
 from pygame.time import get_ticks
 
@@ -16,6 +16,7 @@ class PlayerState:
         self._is_getting_high_hit: bool = False
         self._sprite_index: int = 0
         self._animation_update_time: float = 0
+        self._health: int = Config.MAXIMUM_PLAYER_HEALTH.value
 
     def get_character(self) -> Character:
         return self._character
@@ -80,3 +81,12 @@ class PlayerState:
     def reset_animation_attributes(self):
         self._sprite_index = 0
         self._animation_update_time = get_ticks()
+
+    def get_health(self) -> float:
+        return self._health
+
+    def increase_health(self, value: float):
+        self._health += value
+
+    def decrease_health(self, value: float):
+        self._health -= value
