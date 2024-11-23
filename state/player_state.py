@@ -1,10 +1,11 @@
-from utils import PlayerAction
+from utils import Character, PlayerAction
 from typing import List
 from pygame.time import get_ticks
 
 
 class PlayerState:
-    def __init__(self):
+    def __init__(self, character: Character):
+        self._character = character
         self._player_action: PlayerAction = PlayerAction.IDLE
         self._position_x: float = 0
         self._position_y: float = 0
@@ -15,6 +16,9 @@ class PlayerState:
         self._is_getting_high_hit: bool = False
         self._sprite_index: int = 0
         self._animation_update_time: float = 0
+
+    def get_character(self) -> Character:
+        return self._character
 
     def get_player_action(self) -> PlayerAction:
         return self._player_action
