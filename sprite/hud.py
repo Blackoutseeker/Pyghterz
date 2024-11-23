@@ -1,7 +1,7 @@
 from enum import Enum
 from pygame import Surface, image, Rect, transform, draw
 from state import PlayerState
-from utils import Dimensions
+from utils import Dimensions, Config
 from os import path
 
 
@@ -26,8 +26,10 @@ class Hud:
         self._player1_rectangle_health_bar: Rect = Surface((0, 0)).fill(_HealthBarColor.GREEN.value)
         self._player2_rectangle_health_bar: Rect = Surface((0, 0)).fill(_HealthBarColor.GREEN.value)
 
-        self._player1_rectangle_health_bar.update((80, 26, 280, 18))
-        self._player2_rectangle_health_bar.update((Dimensions.SCREEN_WIDTH.value - (280 + 80), 26, 280, 18))
+        self._health_bar_width: int = Config.HEALTH_BAR_WIDTH.value
+        self._player1_rectangle_health_bar.update((80, 26, self._health_bar_width, 18))
+        self._player2_rectangle_health_bar.update((Dimensions.SCREEN_WIDTH.value - (self._health_bar_width + 80), 26,
+                                                   280, 18))
 
         self._load_sprites()
 
@@ -60,8 +62,18 @@ class Hud:
         player2_portrait_position_x: float = Dimensions.SCREEN_WIDTH.value - (player2_portrait_width + 16)
         self._screen.blit(self._player2_portrait, (player2_portrait_position_x, 24))
 
-        player1_health_bar_color: tuple[int, int, int] = _HealthBarColor.GREEN.value
-        player2_health_bar_color: tuple[int, int, int] = _HealthBarColor.GREEN.value
+        player1_health: float = self._player1_state.get_health()
+        player2_health: float = self._player2_state.get_health()
+
+        player1_health_bar_color: tuple[int, int, int] = self._get_health_bar_color_based_on_health(player1_health)
+        player2_health_bar_color: tuple[int, int, int] = self._get_health_bar_color_based_on_health(player2_health)
+        player1_health_bar_width: float = ((self._player1_state.get_health() / Config.MAXIMUM_PLAYER_HEALTH.value)
+                                           * self._health_bar_width)
+        player2_health_bar_width: float = ((self._player2_state.get_health() / Config.MAXIMUM_PLAYER_HEALTH.value)
+                                           * self._health_bar_width)
+
+        self._player1_rectangle_health_bar.width = player1_health_bar_width
+        self._player2_rectangle_health_bar.width = player2_health_bar_width
 
         draw.rect(self._screen, player1_health_bar_color, self._player1_rectangle_health_bar)
         self._screen.blit(self._player1_health_bar, (10, 10))
@@ -70,3 +82,11 @@ class Hud:
         player2_health_bar_width: int = self._player2_health_bar.get_width()
         player2_health_bar_position_x: float = Dimensions.SCREEN_WIDTH.value - (player2_health_bar_width + 10)
         self._screen.blit(self._player2_health_bar, (player2_health_bar_position_x, 10))
+
+    @staticmethod
+    def _get_health_bar_color_based_on_health(health: float) -> tuple[int, int, int]:
+        if health == Config.MAXIMUM_PLAYER_HEALTH.value:
+            return _HealthBarColor.GREEN.value
+        elif health >= Config.MAXIMUM_PLAYER_HEALTH.value / 2:
+            return _HealthBarColor.YELLOW.value
+        return _HealthBarColor.ORANGE.value
