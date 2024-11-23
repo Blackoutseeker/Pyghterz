@@ -1,7 +1,7 @@
 import pygame
 from sys import exit
 from state import PlayerState, Scenery, Viewport
-from sprite import Animation
+from sprite import Animation, Hud
 from utils import Character, Dimensions, Config
 from input import Movement
 from audio import AudioManager
@@ -26,8 +26,8 @@ class Game:
         self._scenery_speed = Config.SCENERY_SPEED.value
 
         self._scenery = Scenery(self._scenery_scale, self._scenery_speed, self._screen)
-        self._player1_state = PlayerState()
-        self._player2_state = PlayerState()
+        self._player1_state = PlayerState(Character.RYU)
+        self._player2_state = PlayerState(Character.RYU)
 
         self._animation1 = Animation(Character.RYU, self._sprite_scale, self._animation_speed,
                                self._screen, self._player1_state)
@@ -41,6 +41,7 @@ class Game:
         self._player2_hitbox = Hitbox(Character.RYU, self._player2_state, Config.SPRITE_SCALE.value, self._screen)
 
         self._detection = Detection(self._player1_state, self._player2_state)
+        self._hud = Hud(self._screen, self._player1_state, self._player2_state)
 
         self._audio_manager = AudioManager()
         self._audio_manager.load()
@@ -84,13 +85,14 @@ class Game:
 
             self._movement1.update(self._audio_manager)
             self._movement2.update(self._audio_manager)
+
             player1_position_x, player1_position_y = self._player1_state.get_player_position()
             player2_position_x, player2_position_y = self._player2_state.get_player_position()
 
             self._viewport.update(player1_position_x, player2_position_x, Dimensions.WORLD_WIDTH.value)
-
             self._scenery.render(-self._viewport.get_viewport().left, 0, self._viewport)
 
+            self._hud.render()
             self._handle_players_flip()
             self._handle_players_z_axis(player1_position_x, player2_position_x, player1_position_y, player2_position_y)
 
