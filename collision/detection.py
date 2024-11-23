@@ -28,19 +28,18 @@ class Detection:
                     player_state.set_is_attacking(False)
                     player_state.set_is_getting_weak_hit(True)
                     player_state.set_player_action(PlayerAction.WEAK_HIT)
+                    player_state.decrease_health(20)
 
             for player_state in player_states:
                 if is_player2_attacking:
                     player_state = self._player1_state
 
-                is_player_not_getting_hit: bool = (not player_state.get_is_getting_weak_hit() or
-                                                   not player_state.get_is_getting_medium_hit() or
-                                                   not player_state.get_is_getting_high_hit())
-
-                if is_player_not_getting_hit:
+                is_player_getting_hit: bool = self._detect_if_player_is_getting_hit(player_state)
+                if not is_player_getting_hit:
                     player_state.set_is_getting_weak_hit(True)
                     player_state.set_player_action(PlayerAction.WEAK_HIT)
                     player_state.reset_animation_attributes()
+                    player_state.decrease_health(20)
 
                 player_attacking_previous_x, _ = player_state.get_player_position()
                 is_player_getting_hit_facing_right: bool = player_state.get_is_facing_right()
@@ -48,6 +47,13 @@ class Detection:
                 if is_player_getting_hit_facing_right:
                     new_player_getting_hit_position = player_attacking_previous_x - self._hit_speed
                 player_state.set_player_position_x(new_player_getting_hit_position)
+
+    @staticmethod
+    def _detect_if_player_is_getting_hit(player_state: PlayerState) -> bool:
+        is_player_getting_hit: bool = (player_state.get_is_getting_weak_hit() or
+                                       player_state.get_is_getting_medium_hit() or
+                                       player_state.get_is_getting_high_hit())
+        return is_player_getting_hit
 
     def _detect_body_collision(self, player1_body_rect: Rect, player2_body_rect: Rect):
         if player1_body_rect.colliderect(player2_body_rect):
