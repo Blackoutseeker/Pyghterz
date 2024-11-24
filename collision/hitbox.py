@@ -1,6 +1,4 @@
-from pygame.examples.aliens import Player
-
-from utils import Character, PlayerAction
+from utils import Character, PlayerAction, Config
 from state import PlayerState
 from pygame import Surface, Rect, draw
 from typing import List
@@ -47,7 +45,8 @@ class Hitbox:
         base_x = self._get_scaled_size(60)
         base_y = self._get_scaled_size(62)
         self._body_rectangle.update(player_position_x + base_x, player_position_y + base_y, width, height)
-        draw.rect(self._screen, (0, 255, 0), self._body_rectangle, 3)
+        if Config.DEBUG.value:
+            draw.rect(self._screen, (0, 255, 0), self._body_rectangle, 3)
 
     def _render_attack_hitbox(self):
         is_player_attacking: bool = self._player_state.get_is_attacking()
@@ -87,7 +86,8 @@ class Hitbox:
 
                 self._attack_rectangle.update(player_position_x + base_x, player_position_y + base_y,
                                               scaled_width, scaled_height)
-                draw.rect(self._screen, (255, 0, 0), self._attack_rectangle, 3)
+                if Config.DEBUG.value:
+                    draw.rect(self._screen, (255, 0, 0), self._attack_rectangle, 3)
             else:
                 self._counter = 0
                 self._dismiss_attack_rectangle()
