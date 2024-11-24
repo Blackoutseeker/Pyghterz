@@ -17,6 +17,8 @@ class PlayerState:
         self._sprite_index: int = 0
         self._animation_update_time: float = 0
         self._health: int = Config.MAXIMUM_PLAYER_HEALTH.value
+        self._win: bool = False
+        self._lose: bool = False
 
     def get_character(self) -> Character:
         return self._character
@@ -90,3 +92,15 @@ class PlayerState:
 
     def decrease_health(self, value: float):
         self._health -= value
+
+    def get_win(self) -> bool:
+        return self._win
+
+    def set_win(self, win: bool):
+        self._win = win
+
+    def get_lose(self) -> bool:
+        return self._lose
+
+    def set_lose(self, lose: bool):
+        self._lose = lose
