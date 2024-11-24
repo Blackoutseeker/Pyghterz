@@ -14,3 +14,4 @@ class PlayerAction(Enum):
     WEAK_HIT = 'WEAK_HIT'
     WIN = 'WIN'
     DEFEAT = 'DEFEAT'
+    BLOCK = 'BLOCK'
