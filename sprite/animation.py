@@ -16,6 +16,8 @@ class Animation:
         self._sprites: dict = {}
         for action in PlayerAction:
             self._sprites[action.name] = self._load_sprites(action)
+        self._play_loop: bool = False
+        self._index_loop: int = 0
 
     def _load_sprites(self, player_action: PlayerAction) -> List[Surface]:
         sprites: List[Surface] = []
@@ -36,14 +38,28 @@ class Animation:
 
         if get_ticks() - self._player_state.get_animation_update_time() > self._speed:
             sprite_index += 1
+            if self._play_loop:
+                if sprite_index >= len(current_sprites):
+                    sprite_index = self._index_loop
             self._player_state.set_sprite_index(sprite_index)
             self._player_state.set_animation_update_time(get_ticks())
 
-        sprite_index = self._player_state.get_sprite_index()
         is_player_attacking: bool = self._player_state.get_is_attacking()
         is_player_getting_hit: bool = (self._player_state.get_is_getting_weak_hit() or
                                        self._player_state.get_is_getting_medium_hit() or
                                        self._player_state.get_is_getting_high_hit())
+        player_won: bool = self._player_state.get_win()
+        player_lose: bool = self._player_state.get_lose()
+
+        if player_won or player_lose:
+            if player_won:
+                self._play_loop = True
+                self._index_loop = 9
+            if player_lose:
+                self._play_loop = True
+                self._index_loop = 10
+                current_sprites = self._sprites[PlayerAction.DEFEAT.name]
+                self._index_loop = len(current_sprites) - 1
 
         if sprite_index >= len(current_sprites):
             if is_player_attacking:
