@@ -1,16 +1,15 @@
 from pygame.key import get_pressed
 from state import PlayerState
 from .keymap import Keymap
-from utils import PlayerAction
+from utils import MovementSpeed, PlayerAction
 from audio import AudioManager, SoundType
-
-speed = 8
-audio_manager = AudioManager()
 
 
 class Movement:
     def __init__(self, player_state: PlayerState, is_second_player: bool = False):
         self._player_state: PlayerState = player_state
+        self._move_forward_speed: int = player_state.get_movements_speed()[MovementSpeed.MOVE_FORWARD.name]
+        self._move_backward_speed: int = player_state.get_movements_speed()[MovementSpeed.MOVE_BACKWARD.name]
         self._is_first_player: bool = is_second_player
         self._player_key = Keymap.Player1
         if is_second_player:
@@ -38,15 +37,19 @@ class Movement:
                     # self._position_y += speed
                     pass
                 elif keys[self._player_key.BACKWARD.value]:
-                    player_position_x -= speed
+                    speed: int = self._move_backward_speed
                     player_action = PlayerAction.MOVE_BACKWARD
-                    if self._player_state.get_is_facing_right() is not True:
+                    if not self._player_state.get_is_facing_right():
                         player_action = PlayerAction.MOVE_FORWARD
+                        speed = self._move_forward_speed
+                    player_position_x -= speed
                 elif keys[self._player_key.FORWARD.value]:
-                    player_position_x += speed
+                    speed: int = self._move_forward_speed
                     player_action = PlayerAction.MOVE_FORWARD
-                    if self._player_state.get_is_facing_right() is not True:
+                    if not self._player_state.get_is_facing_right():
                         player_action = PlayerAction.MOVE_BACKWARD
+                        speed = self._move_backward_speed
+                    player_position_x += speed
 
                 elif keys[self._player_key.WEAK_PUNCH.value]:
                     self._player_state.set_is_attacking(True)
