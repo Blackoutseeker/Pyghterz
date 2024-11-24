@@ -12,3 +12,5 @@ class PlayerAction(Enum):
     MEDIUM_KICK = 'MEDIUM_KICK'
     HIGH_KICK = 'HIGH_KICK'
     WEAK_HIT = 'WEAK_HIT'
+    WIN = 'WIN'
+    DEFEAT = 'DEFEAT'
