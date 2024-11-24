@@ -2,7 +2,7 @@ import pygame
 from sys import exit
 from state import PlayerState, Scenery, Viewport
 from sprite import Animation, Hud
-from utils import Character, Dimensions, Config
+from utils import Dimensions, Config, Character, PlayerAction
 from input import Movement
 from audio import AudioManager
 from collision import Hitbox, Detection
@@ -30,9 +30,9 @@ class Game:
         self._player2_state = PlayerState(Character.RYU)
 
         self._animation1 = Animation(Character.RYU, self._sprite_scale, self._animation_speed,
-                               self._screen, self._player1_state)
+                                     self._screen, self._player1_state)
         self._animation2 = Animation(Character.RYU, self._sprite_scale, self._animation_speed,
-                               self._screen, self._player2_state)
+                                     self._screen, self._player2_state)
 
         self._movement1 = Movement(self._player1_state)
         self._movement2 = Movement(self._player2_state, True)
@@ -46,6 +46,8 @@ class Game:
         self._audio_manager = AudioManager()
         self._audio_manager.load()
         # self._audio_manager.play_background_music()
+        self._round_ended: bool = False
+        self._double_defeat: bool = False
 
     def _handle_players_flip(self):
         player1_x, _ = self._player1_state.get_player_position()
@@ -71,6 +73,31 @@ class Game:
             self._animation2.render(player2_position_x - self._viewport.get_viewport().left, player2_position_y,
                                     self._viewport.get_viewport())
 
+    def _handle_players_health(self):
+        player1_health: float = self._player1_state.get_health()
+        player2_health: float = self._player2_state.get_health()
+
+        if player1_health <= 0 and player2_health <= 0:
+            self._double_defeat = True
+            self._round_ended = True
+            self._player1_state.set_lose(True)
+            self._player2_state.set_lose(True)
+            self._player1_state.set_player_action(PlayerAction.DEFEAT)
+            self._player2_state.set_player_action(PlayerAction.DEFEAT)
+            return
+        if player1_health <= 0 or player2_health <= 0:
+            self._round_ended = True
+        if player1_health <= 0:
+            self._player1_state.set_lose(True)
+            self._player2_state.set_win(True)
+            self._player1_state.set_player_action(PlayerAction.DEFEAT)
+            self._player2_state.set_player_action(PlayerAction.WIN)
+        if player2_health <= 0:
+            self._player2_state.set_lose(True)
+            self._player1_state.set_win(True)
+            self._player2_state.set_player_action(PlayerAction.DEFEAT)
+            self._player1_state.set_player_action(PlayerAction.WIN)
+
     def run(self):
         running = True
         self._screen.fill((0, 0, 0))
@@ -82,9 +109,8 @@ class Game:
                     if event.key == pygame.K_ESCAPE:
                         running = False
 
-
-            self._movement1.update(self._audio_manager)
-            self._movement2.update(self._audio_manager)
+            self._movement1.update(self._round_ended, self._audio_manager)
+            self._movement2.update(self._round_ended, self._audio_manager)
 
             player1_position_x, player1_position_y = self._player1_state.get_player_position()
             player2_position_x, player2_position_y = self._player2_state.get_player_position()
@@ -95,6 +121,7 @@ class Game:
             self._hud.render()
             self._handle_players_flip()
             self._handle_players_z_axis(player1_position_x, player2_position_x, player1_position_y, player2_position_y)
+            self._handle_players_health()
 
             self._player1_hitbox.render()
             self._player2_hitbox.render()
@@ -105,7 +132,7 @@ class Game:
             player2_attack_rectangle = self._player2_hitbox.get_attack_rectangle()
 
             self._detection.detect_collision(player1_body_rectangle, player2_body_rectangle,
-                                       player1_attack_rectangle, player2_attack_rectangle)
+                                             player1_attack_rectangle, player2_attack_rectangle)
 
             pygame.display.flip()
             self._clock.tick(Config.FPS.value)
