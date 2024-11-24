@@ -6,8 +6,9 @@ from audio import AudioManager, SoundType
 
 
 class Movement:
-    def __init__(self, player_state: PlayerState, is_second_player: bool = False):
+    def __init__(self, player_state: PlayerState, another_player_state: PlayerState, is_second_player: bool = False):
         self._player_state: PlayerState = player_state
+        self._another_player_state: PlayerState = another_player_state
         self._move_forward_speed: int = player_state.get_movements_speed()[MovementSpeed.MOVE_FORWARD.name]
         self._move_backward_speed: int = player_state.get_movements_speed()[MovementSpeed.MOVE_BACKWARD.name]
         self._is_first_player: bool = is_second_player
@@ -19,7 +20,7 @@ class Movement:
             self._player_state.set_player_position_x(330)
         self._player_state.set_player_position_y(180)
 
-    def update(self, round_ended: bool, audio_mgr: AudioManager):
+    def update(self, round_ended: bool, is_players_colliding: bool, audio_mgr: AudioManager):
         if not round_ended:
             keys = get_pressed()
             is_player_attacking: bool = self._player_state.get_is_attacking()
@@ -49,6 +50,10 @@ class Movement:
                     if not self._player_state.get_is_facing_right():
                         player_action = PlayerAction.MOVE_BACKWARD
                         speed = self._move_backward_speed
+                    another_player_action: PlayerAction = self._another_player_state.get_player_action()
+                    if is_players_colliding:
+                        if another_player_action == PlayerAction.MOVE_FORWARD:
+                            speed = 0
                     player_position_x += speed
 
                 elif keys[self._player_key.WEAK_PUNCH.value]:

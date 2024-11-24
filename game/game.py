@@ -34,8 +34,8 @@ class Game:
         self._animation2 = Animation(Character.RYU, self._sprite_scale, self._animation_speed,
                                      self._screen, self._player2_state)
 
-        self._movement1 = Movement(self._player1_state)
-        self._movement2 = Movement(self._player2_state, True)
+        self._movement1 = Movement(self._player1_state, self._player2_state)
+        self._movement2 = Movement(self._player2_state, self._player1_state, True)
 
         self._player1_hitbox = Hitbox(Character.RYU, self._player1_state, Config.SPRITE_SCALE.value, self._screen)
         self._player2_hitbox = Hitbox(Character.RYU, self._player2_state, Config.SPRITE_SCALE.value, self._screen)
@@ -48,6 +48,7 @@ class Game:
         # self._audio_manager.play_background_music()
         self._round_ended: bool = False
         self._double_defeat: bool = False
+        self._is_players_colliding: bool = False
 
     def _handle_players_flip(self):
         player1_x, _ = self._player1_state.get_player_position()
@@ -109,8 +110,8 @@ class Game:
                     if event.key == pygame.K_ESCAPE:
                         running = False
 
-            self._movement1.update(self._round_ended, self._audio_manager)
-            self._movement2.update(self._round_ended, self._audio_manager)
+            self._movement1.update(self._round_ended, self._is_players_colliding, self._audio_manager)
+            self._movement2.update(self._round_ended, self._is_players_colliding, self._audio_manager)
 
             player1_position_x, player1_position_y = self._player1_state.get_player_position()
             player2_position_x, player2_position_y = self._player2_state.get_player_position()
@@ -133,6 +134,8 @@ class Game:
 
             self._detection.detect_collision(player1_body_rectangle, player2_body_rectangle,
                                              player1_attack_rectangle, player2_attack_rectangle)
+            is_players_colliding: bool = Detection.get_players_collision(player1_body_rectangle, player2_body_rectangle)
+            self._is_players_colliding = is_players_colliding
 
             pygame.display.flip()
             self._clock.tick(Config.FPS.value)
