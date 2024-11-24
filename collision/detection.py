@@ -93,3 +93,10 @@ class Detection:
 
             self._player1_state.set_player_position_x(new_player1_position_x)
             self._player2_state.set_player_position_x(new_player2_position_x)
+
+    @staticmethod
+    def get_players_collision(player1_body_rect: Rect, player2_body_rect: Rect) -> bool:
+        is_players_colliding: bool = False
+        if player1_body_rect.colliderect(player2_body_rect):
+            is_players_colliding = True
+        return is_players_colliding
