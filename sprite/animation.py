@@ -48,7 +48,7 @@ class Animation:
         is_player_getting_hit: bool = (self._player_state.get_is_getting_weak_hit() or
                                        self._player_state.get_is_getting_medium_hit() or
                                        self._player_state.get_is_getting_high_hit())
-        is_player_blocking: bool = self._player_state.get_is_blocking()
+        is_player_blocking: bool = self._player_state.get_player_action() == PlayerAction.BLOCK
         player_won: bool = self._player_state.get_win()
         player_lose: bool = self._player_state.get_lose()
 
