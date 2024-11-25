@@ -15,10 +15,6 @@ class Movement:
         self._player_key = Keymap.Player1
         if is_second_player:
             self._player_key = Keymap.Player2
-        self._player_state.set_player_position_x(80)
-        if is_second_player:
-            self._player_state.set_player_position_x(330)
-        self._player_state.set_player_position_y(180)
 
     def update(self, round_ended: bool, is_players_colliding: bool, audio_mgr: AudioManager):
         if not round_ended:
