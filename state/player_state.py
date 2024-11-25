@@ -11,6 +11,7 @@ class PlayerState:
         self._position_y: float = 0
         self._is_attacking: bool = False
         self._is_facing_right: bool = True
+        self._is_blocking: bool = False
         self._is_getting_weak_hit: bool = False
         self._is_getting_medium_hit: bool = False
         self._is_getting_high_hit: bool = False
@@ -51,6 +52,12 @@ class PlayerState:
 
     def set_is_facing_right(self, is_facing_right: bool):
         self._is_facing_right = is_facing_right
+
+    def get_is_blocking(self) -> bool:
+        return self._is_blocking
+
+    def set_is_blocking(self, is_blocking: bool):
+        self._is_blocking = is_blocking
 
     def get_is_getting_weak_hit(self) -> bool:
         return self._is_getting_weak_hit
