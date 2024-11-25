@@ -27,10 +27,22 @@ class Movement:
             is_player_getting_hit: bool = (self._player_state.get_is_getting_weak_hit() or
                                            self._player_state.get_is_getting_medium_hit() or
                                            self._player_state.get_is_getting_high_hit())
+            is_player_blocking: bool = self._player_state.get_is_blocking()
+            is_player_facing_right: bool = self._player_state.get_is_facing_right()
             player_action: PlayerAction = PlayerAction.IDLE
             player_position_x, player_position_y = self._player_state.get_player_position()
 
-            if is_player_attacking is False and is_player_getting_hit is False:
+            if not is_player_attacking:
+                if keys[self._player_key.BACKWARD.value]:
+                    if not is_player_attacking and not is_player_getting_hit and is_player_facing_right:
+                        self._player_state.set_is_blocking(True)
+                        player_action = PlayerAction.BLOCK
+                elif keys[self._player_key.FORWARD.value]:
+                    if not is_player_attacking and not is_player_getting_hit and not is_player_facing_right:
+                        self._player_state.set_is_blocking(True)
+                        player_action = PlayerAction.BLOCK
+ 
+            if not is_player_attacking and not is_player_getting_hit and not is_player_blocking:
                 if keys[self._player_key.JUMP.value]:
                     # self._position_y -= speed
                     pass

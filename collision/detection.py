@@ -37,7 +37,11 @@ class Detection:
         if is_player1_attacking or is_player2_attacking:
             player_states: List[PlayerState] = [self._player2_state]
             is_both_players_attacking: bool = is_player1_attacking and is_player2_attacking
-            if is_both_players_attacking:
+            is_player1_blocking: bool = self._player1_state.get_is_blocking()
+            is_player2_blocking: bool = self._player2_state.get_is_blocking()
+            is_players_blocking: bool = is_player1_blocking and is_player2_blocking
+
+            if is_both_players_attacking and not is_players_blocking:
                 player_states.append(self._player1_state)
                 for player_state in player_states:
                     player_state.set_is_attacking(False)
@@ -49,8 +53,13 @@ class Detection:
                 if is_player2_attacking:
                     player_state = self._player1_state
 
+                is_player_blocking: bool = player_state.get_is_blocking()
                 is_player_getting_hit: bool = self._detect_if_player_is_getting_hit(player_state)
-                if not is_player_getting_hit:
+
+                if is_player_blocking and (is_player1_attacking or is_player2_attacking):
+                    player_state.set_player_action(PlayerAction.BLOCK)
+
+                if not is_player_getting_hit and not is_player_blocking:
                     player_state.set_is_getting_weak_hit(True)
                     player_state.set_player_action(PlayerAction.WEAK_HIT)
                     player_state.reset_animation_attributes()
@@ -61,7 +70,13 @@ class Detection:
                 new_player_getting_hit_position: float = player_attacking_previous_x + self._hit_speed
                 if is_player_getting_hit_facing_right:
                     new_player_getting_hit_position = player_attacking_previous_x - self._hit_speed
-                player_state.set_player_position_x(new_player_getting_hit_position)
+                if not is_player_blocking:
+                    player_state.set_player_position_x(new_player_getting_hit_position)
+        else:
+            self._player1_state.set_is_getting_weak_hit(False)
+            self._player1_state.set_is_blocking(False)
+            self._player2_state.set_is_getting_weak_hit(False)
+            self._player2_state.set_is_blocking(False)
 
     def _change_hit_speed(self, attack_name: str):
         if 'WEAK' in attack_name:
