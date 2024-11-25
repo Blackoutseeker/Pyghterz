@@ -41,8 +41,7 @@ class Hitbox:
     def _render_body_hitbox(self):
         player_position_x, player_position_y = self._player_state.get_player_position()
         width, height = self._player_state.get_body_rectangle_area_scaled()
-        base_x = self._get_scaled_size(60)
-        base_y = self._get_scaled_size(62)
+        base_x, base_y = self._player_state.get_body_rectangle_base_scaled()
         self._body_rectangle.update(player_position_x + base_x, player_position_y + base_y, width, height)
         if Config.DEBUG.value:
             draw.rect(self._screen, (0, 255, 0), self._body_rectangle, 3)
