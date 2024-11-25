@@ -1,5 +1,6 @@
 from enum import Enum
 from .character import Character
+from typing import List
 
 
 class MovementSpeed(Enum):
@@ -17,16 +18,20 @@ class AttackDamage(Enum):
 
 
 class MoveSetStats:
-    def __init__(self, character: Character):
+    def __init__(self, character: Character, is_second_player: bool = False):
         self._character = character
         self._movements_speed: dict = self._get_character_movements_speed(character)
         self._attacks_damage: dict = self._get_character_attacks_damage(character)
+        self._initial_position_x, self._initial_position_y = self._get_initial_position(character, is_second_player)
 
     def get_movements_speed(self) -> dict:
         return self._movements_speed
 
     def get_attacks_damage(self) -> dict:
         return self._attacks_damage
+
+    def get_initial_position(self) -> List[int]:
+        return [self._initial_position_x, self._initial_position_y]
 
     @staticmethod
     def _get_character_movements_speed(character: Character) -> dict:
@@ -69,3 +74,14 @@ class MoveSetStats:
                 attacks_damage[attack.name] = attack_damage
 
         return attacks_damage
+
+    @staticmethod
+    def _get_initial_position(character: Character, is_second_player: bool) -> List[int]:
+        initial_position_x, initial_position_y = 0, 0
+
+        if character == Character.RYU:
+            initial_position_x, initial_position_y = 80, 180
+            if is_second_player:
+                initial_position_x, initial_position_y = 330, 180
+
+        return [initial_position_x, initial_position_y]
