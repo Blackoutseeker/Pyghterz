@@ -10,6 +10,8 @@ class PlayerState:
         self._player_action: PlayerAction = PlayerAction.IDLE
         self._position_x, self._position_y = MoveSetStats(character, is_second_player).get_initial_position()
         self._initial_position_x, self._initial_position_y = self._position_x, self._position_y
+        self._scale: float = MoveSetStats(character).get_character_scale()
+        self._scaled_body_rectangle_area: List[float] = MoveSetStats(character).get_body_rectangle_area_scaled()
         self._is_attacking: bool = False
         self._is_facing_right: bool = True
         self._is_blocking: bool = False
@@ -41,6 +43,12 @@ class PlayerState:
 
     def set_player_position_y(self, position_y: float):
         self._position_y = position_y
+
+    def get_scale(self) -> float:
+        return self._scale
+
+    def get_body_rectangle_area_scaled(self) -> List[float]:
+        return self._scaled_body_rectangle_area
 
     def get_is_attacking(self) -> bool:
         return self._is_attacking
