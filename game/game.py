@@ -20,7 +20,6 @@ class Game:
         self._viewport = Viewport(self._screen)
         self._clock = pygame.time.Clock()
 
-        self._sprite_scale = Config.SPRITE_SCALE.value
         self._animation_speed = Config.ANIMATION_SPEED.value
         self._scenery_scale = Config.SCENERY_SCALE.value
         self._scenery_speed = Config.SCENERY_SPEED.value
@@ -29,16 +28,14 @@ class Game:
         self._player1_state = PlayerState(Character.RYU)
         self._player2_state = PlayerState(Character.RYU, True)
 
-        self._animation1 = Animation(Character.RYU, self._sprite_scale, self._animation_speed,
-                                     self._screen, self._player1_state)
-        self._animation2 = Animation(Character.RYU, self._sprite_scale, self._animation_speed,
-                                     self._screen, self._player2_state)
+        self._animation1 = Animation(Character.RYU, self._animation_speed, self._screen, self._player1_state)
+        self._animation2 = Animation(Character.RYU, self._animation_speed, self._screen, self._player2_state)
 
         self._movement1 = Movement(self._player1_state, self._player2_state)
         self._movement2 = Movement(self._player2_state, self._player1_state, True)
 
-        self._player1_hitbox = Hitbox(Character.RYU, self._player1_state, Config.SPRITE_SCALE.value, self._screen)
-        self._player2_hitbox = Hitbox(Character.RYU, self._player2_state, Config.SPRITE_SCALE.value, self._screen)
+        self._player1_hitbox = Hitbox(Character.RYU, self._player1_state, self._screen)
+        self._player2_hitbox = Hitbox(Character.RYU, self._player2_state, self._screen)
 
         self._detection = Detection(self._player1_state, self._player2_state)
         self._hud = Hud(self._screen, self._player1_state, self._player2_state)
@@ -63,19 +60,24 @@ class Game:
             self._player1_state.set_is_facing_right(False)
             self._player2_state.set_is_facing_right(True)
 
-    def _handle_players_z_axis(self, player1_position_x: float, player2_position_x: float,
-                               player1_position_y: float, player2_position_y: float):
-        is_player1_attacking = self._player1_state.get_is_attacking()
-        if is_player1_attacking:
-            self._animation2.render(player2_position_x - self._viewport.get_viewport().left, player2_position_y,
-                                    self._viewport.get_viewport())
-            self._animation1.render(player1_position_x - self._viewport.get_viewport().left, player1_position_y,
-                                    self._viewport.get_viewport())
-        else:
-            self._animation1.render(player1_position_x - self._viewport.get_viewport().left, player1_position_y,
-                                    self._viewport.get_viewport())
-            self._animation2.render(player2_position_x - self._viewport.get_viewport().left, player2_position_y,
-                                    self._viewport.get_viewport())
+    def _handle_players_z_axis(self):
+        is_player2_attacking = self._player2_state.get_is_attacking()
+        top_player_state: PlayerState = self._player1_state
+        bottom_player_state: PlayerState = self._player2_state
+        bottom_animation: Animation = self._animation2
+        top_animation: Animation = self._animation1
+
+        if is_player2_attacking:
+            top_player_state = self._player2_state
+            bottom_player_state = self._player1_state
+            top_animation = self._animation2
+            bottom_animation = self._animation1
+
+        bottom_player_position_x, bottom_player_position_y = bottom_player_state.get_player_position()
+        top_player_position_x, top_player_position_y = top_player_state.get_player_position()
+
+        bottom_animation.render(bottom_player_position_x, bottom_player_position_y)
+        top_animation.render(top_player_position_x, top_player_position_y)
 
     def _handle_players_health(self):
         player1_health: float = self._player1_state.get_health()
@@ -128,12 +130,12 @@ class Game:
             player1_position_x, player1_position_y = self._player1_state.get_player_position()
             player2_position_x, player2_position_y = self._player2_state.get_player_position()
 
-            self._viewport.update(player1_position_x, player2_position_x, Dimensions.WORLD_WIDTH.value)
-            self._scenery.render(-self._viewport.get_viewport().left, 0, self._viewport)
+            # self._viewport.update(player1_position_x, player2_position_x, Dimensions.WORLD_WIDTH.value)
+            self._scenery.render(0, 0, self._viewport)
 
             self._hud.render()
             self._handle_players_flip()
-            self._handle_players_z_axis(player1_position_x, player2_position_x, player1_position_y, player2_position_y)
+            self._handle_players_z_axis()
             self._handle_players_health()
 
             self._player1_hitbox.render()
