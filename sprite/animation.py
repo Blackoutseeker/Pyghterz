@@ -7,12 +7,12 @@ from typing import List
 
 
 class Animation:
-    def __init__(self, character: Character, scale: float, speed: float, screen: Surface, player_state: PlayerState):
+    def __init__(self, character: Character, speed: float, screen: Surface, player_state: PlayerState):
         self._character: Character = character
-        self._scale: float = scale
         self._speed: float = speed
         self._screen: Surface = screen
         self._player_state: PlayerState = player_state
+        self._scale: float = player_state.get_scale()
         self._sprites: dict = {}
         for action in PlayerAction:
             self._sprites[action.name] = self._load_sprites(action)
@@ -32,7 +32,7 @@ class Animation:
             sprites.append(scaled_sprite)
         return sprites
 
-    def render(self, position_x: float, position_y: float, viewport: Rect):
+    def render(self, position_x: float, position_y: float):
         sprite_index: int = self._player_state.get_sprite_index()
         current_sprites: List[Surface] = self._sprites[self._player_state.get_player_action().name]
 
@@ -84,7 +84,4 @@ class Animation:
         if not self._player_state.get_is_facing_right():
             current_sprite = transform.flip(current_sprite, True, False)
 
-        adjusted_x = position_x - viewport.left
-        adjusted_y = position_y - viewport.top
-
-        self._screen.blit(current_sprite, (adjusted_x, adjusted_y))
+        self._screen.blit(current_sprite, (position_x, position_y))

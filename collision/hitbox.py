@@ -6,10 +6,10 @@ from .character_hitbox import CharacterHitbox
 
 
 class Hitbox:
-    def __init__(self, character: Character, player_state: PlayerState, scale: float, screen: Surface):
+    def __init__(self, character: Character, player_state: PlayerState, screen: Surface):
         self._character = character
         self._player_state = player_state
-        self._scale: float = scale
+        self._scale: float = player_state.get_scale()
         self._screen = screen
         self._body_rectangle: Rect = Rect(0, 0, 0, 0)
         self._attack_rectangle: Rect = Rect(0, 0, 0, 0)
@@ -40,8 +40,7 @@ class Hitbox:
 
     def _render_body_hitbox(self):
         player_position_x, player_position_y = self._player_state.get_player_position()
-        width = self._get_scaled_size(46)
-        height = self._get_scaled_size(102)
+        width, height = self._player_state.get_body_rectangle_area_scaled()
         base_x = self._get_scaled_size(60)
         base_y = self._get_scaled_size(62)
         self._body_rectangle.update(player_position_x + base_x, player_position_y + base_y, width, height)
