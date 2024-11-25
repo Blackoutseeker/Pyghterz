@@ -23,6 +23,8 @@ class MoveSetStats:
         self._movements_speed: dict = self._get_character_movements_speed(character)
         self._attacks_damage: dict = self._get_character_attacks_damage(character)
         self._initial_position_x, self._initial_position_y = self._get_initial_position(character, is_second_player)
+        self._character_scale: float = self._get_character_scale(character)
+        self._body_rectangle_area: List[float] = self._get_body_rectangle_area(character)
 
     def get_movements_speed(self) -> dict:
         return self._movements_speed
@@ -32,6 +34,15 @@ class MoveSetStats:
 
     def get_initial_position(self) -> List[int]:
         return [self._initial_position_x, self._initial_position_y]
+
+    def get_character_scale(self) -> float:
+        return self._character_scale
+
+    def get_body_rectangle_area_scaled(self) -> [float]:
+        body_rectangle_width, body_rectangle_height = self._body_rectangle_area
+        scaled_body_rectangle_width: float = body_rectangle_width * self._character_scale
+        scaled_body_rectangle_height: float = body_rectangle_height * self._character_scale
+        return [scaled_body_rectangle_width, scaled_body_rectangle_height]
 
     @staticmethod
     def _get_character_movements_speed(character: Character) -> dict:
@@ -85,3 +96,22 @@ class MoveSetStats:
                 initial_position_x, initial_position_y = 330, 180
 
         return [initial_position_x, initial_position_y]
+
+    @staticmethod
+    def _get_character_scale(character: Character) -> float:
+        scale = 1
+
+        if character == Character.RYU:
+            scale = 2.4
+
+        return scale
+
+    @staticmethod
+    def _get_body_rectangle_area(character: Character) -> List[float]:
+        body_rectangle_width, body_rectangle_height = 50, 120
+
+        if character == Character.RYU:
+            body_rectangle_width = 46
+            body_rectangle_height = 102
+
+        return [body_rectangle_width, body_rectangle_height]
