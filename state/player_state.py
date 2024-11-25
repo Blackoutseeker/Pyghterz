@@ -4,11 +4,12 @@ from pygame.time import get_ticks
 
 
 class PlayerState:
-    def __init__(self, character: Character):
-        self._character = character
+    def __init__(self, character: Character, is_second_player: bool = False):
+        self._character: Character = character
+        self._is_second_player: bool = is_second_player
         self._player_action: PlayerAction = PlayerAction.IDLE
-        self._position_x: float = 0
-        self._position_y: float = 0
+        self._position_x, self._position_y = MoveSetStats(character, is_second_player).get_initial_position()
+        self._initial_position_x, self._initial_position_y = self._position_x, self._position_y
         self._is_attacking: bool = False
         self._is_facing_right: bool = True
         self._is_blocking: bool = False
@@ -119,3 +120,21 @@ class PlayerState:
 
     def set_lose(self, lose: bool):
         self._lose = lose
+
+    def get_initial_position(self) -> List[int]:
+        return [self._position_x, self._position_y]
+
+    def reset_all_states(self):
+        self._player_action: PlayerAction = PlayerAction.IDLE
+        self._position_x, self._position_y = self._initial_position_x, self._initial_position_y
+        self._is_attacking: bool = False
+        self._is_facing_right: bool = True
+        self._is_blocking: bool = False
+        self._is_getting_weak_hit: bool = False
+        self._is_getting_medium_hit: bool = False
+        self._is_getting_high_hit: bool = False
+        self._sprite_index: int = 0
+        self._animation_update_time: float = 0
+        self._health: int = Config.MAXIMUM_PLAYER_HEALTH.value
+        self._win: bool = False
+        self._lose: bool = False
