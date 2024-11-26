@@ -7,6 +7,7 @@ from random import shuffle
 from typing import List
 from pygame.event import Event
 from sys import exit
+from input import QuizKeymap
 from pygame.time import get_ticks, set_timer
 
 
@@ -65,11 +66,17 @@ class QuizScreen(Screen):
                 return ScreenType.GAMEPLAY.name
 
     def _handle_difficulty_selection(self, event: Event):
-        if event.key == K_UP:
+        player_keys = QuizKeymap.Player1
+        is_second_player: bool = self._current_player == 2
+
+        if is_second_player:
+            player_keys = QuizKeymap.Player2
+
+        if event.key == player_keys.UP.value:
             self._selected_difficulty_index = (self._selected_difficulty_index - 1) % len(self._difficulty_options)
-        elif event.key == K_DOWN:
+        elif event.key == player_keys.DOWN.value:
             self._selected_difficulty_index = (self._selected_difficulty_index + 1) % len(self._difficulty_options)
-        elif event.key == K_RETURN:
+        elif event.key in player_keys.CONFIRM_BUTTONS.value:
             selected_difficulty = self._difficulty_options[self._selected_difficulty_index]
             self._player_difficulties[self._current_player] = selected_difficulty
             self._is_selecting_difficulty = False
@@ -95,11 +102,17 @@ class QuizScreen(Screen):
                                      2: QuizDifficulty.EASY}
 
     def _handle_question_selection(self, event: Event):
-        if event.key == K_UP and not self._is_answered:
+        player_keys = QuizKeymap.Player1
+        is_second_player: bool = self._current_player == 2
+
+        if is_second_player:
+            player_keys = QuizKeymap.Player2
+
+        if event.key == player_keys.UP.value and not self._is_answered:
             self._selected_option = (self._selected_option - 1) % len(self._options)
-        elif event.key == K_DOWN and not self._is_answered:
+        elif event.key == player_keys.DOWN.value and not self._is_answered:
             self._selected_option = (self._selected_option + 1) % len(self._options)
-        elif event.key == K_RETURN and not self._is_answered:
+        elif event.key in player_keys.CONFIRM_BUTTONS.value and not self._is_answered:
             self._is_answered = True
             self._feedback_time = get_ticks()
 
