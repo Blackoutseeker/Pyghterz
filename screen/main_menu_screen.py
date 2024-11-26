@@ -22,7 +22,7 @@ class MainMenuScreen(Screen):
                     quit()
                     exit()
                 elif event.key == K_RETURN:
-                    return ScreenType.GAMEPLAY.name
+                    return ScreenType.QUIZ.name
 
     def render(self):
         self.screen.fill((0, 0, 0))
