@@ -27,3 +27,33 @@ class Keymap:
         WEAK_KICK = K_KP6
         MEDIUM_KICK = K_KP8
         HIGH_KICK = K_KP9
+
+
+class QuizKeymap:
+    class Player1(Enum):
+        UP = Keymap.Player1.JUMP.value
+        DOWN = Keymap.Player1.CROUCH.value
+        CONFIRM_BUTTONS = [
+            Keymap.Player1.WEAK_PUNCH.value,
+            Keymap.Player1.MEDIUM_PUNCH.value,
+            Keymap.Player1.HIGH_PUNCH.value
+        ]
+        CANCEL_BUTTONS = [
+            Keymap.Player1.WEAK_KICK.value,
+            Keymap.Player1.MEDIUM_KICK.value,
+            Keymap.Player1.HIGH_KICK.value
+        ]
+
+    class Player2(Enum):
+        CANCEL_BUTTONS = [
+            Keymap.Player2.WEAK_KICK.value,
+            Keymap.Player2.MEDIUM_KICK.value,
+            Keymap.Player2.HIGH_KICK.value
+        ]
+        CONFIRM_BUTTONS = [
+            Keymap.Player2.WEAK_PUNCH.value,
+            Keymap.Player2.MEDIUM_PUNCH.value,
+            Keymap.Player2.HIGH_PUNCH.value
+        ]
+        DOWN = Keymap.Player2.CROUCH.value
+        UP = Keymap.Player2.JUMP.value
