@@ -9,6 +9,14 @@ class Detection:
         self._player1_state: PlayerState = player1_state
         self._player2_state: PlayerState = player2_state
         self._hit_speed: int = 2
+        self._valid_player_actions: List[PlayerAction] = [
+            PlayerAction.WEAK_PUNCH,
+            PlayerAction.MEDIUM_PUNCH,
+            PlayerAction.HIGH_PUNCH,
+            PlayerAction.WEAK_KICK,
+            PlayerAction.MEDIUM_KICK,
+            PlayerAction.HIGH_KICK
+        ]
 
     def detect_collision(self, player1_body_rect: Rect, player2_body_rect: Rect,
                          player1_attack_rect: Rect, player2_attack_rect: Rect):
@@ -21,13 +29,16 @@ class Detection:
         is_player2_attacking: bool = player2_attack_rect.colliderect(player1_body_rect)
         damage: int = 20
 
-        if is_player1_attacking:
+        is_valid_player_action: bool = ((self._player1_state.get_player_action() in self._valid_player_actions) or
+                                        (self._player2_state.get_player_action() in self._valid_player_actions))
+
+        if is_player1_attacking and is_valid_player_action:
             player_wins: bool = self._player1_state.get_win()
             if not player_wins:
                 player_action_name: str = self._player1_state.get_player_action().name
                 damage = self._player1_state.get_attacks_damage()[player_action_name]
                 self._change_hit_speed(player_action_name)
-        if is_player2_attacking:
+        if is_player2_attacking and is_valid_player_action:
             player_wins: bool = self._player2_state.get_win()
             if not player_wins:
                 player_action_name: str = self._player2_state.get_player_action().name
