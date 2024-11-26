@@ -302,3 +302,29 @@ class Quiz:
             ]
 
         return questions
+
+    @staticmethod
+    def get_score(difficulty: QuizDifficulty) -> int:
+        score: int = 100
+
+        if difficulty == QuizDifficulty.EASY:
+            score = 100
+        elif difficulty == QuizDifficulty.MEDIUM:
+            score = 300
+        elif difficulty == QuizDifficulty.HARD:
+            score = 500
+
+        return score
+
+    @staticmethod
+    def get_percentage_balance(difficulty: QuizDifficulty) -> float:
+        percentage_balance: float = 0
+
+        if difficulty == QuizDifficulty.EASY:
+            percentage_balance = 0.1
+        elif difficulty == QuizDifficulty.MEDIUM:
+            percentage_balance = 0.3
+        elif difficulty == QuizDifficulty.HARD:
+            percentage_balance = 0.5
+
+        return percentage_balance
