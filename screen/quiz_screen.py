@@ -1,11 +1,12 @@
 from .screen import Screen, ScreenType
 from pygame import Surface, QUIT, quit, KEYDOWN, K_ESCAPE, K_UP, K_DOWN, K_RETURN, Rect, draw, USEREVENT
+from state import QuizState
+from utils import Character, Dimensions, Quiz, QuizDifficulty
 from font import CustomFont
 from random import shuffle
 from typing import List
 from pygame.event import Event
 from sys import exit
-from utils import Dimensions, Quiz, QuizDifficulty
 from pygame.time import get_ticks, set_timer
 
 
@@ -13,6 +14,8 @@ class QuizScreen(Screen):
     def __init__(self, screen: Surface):
         super().__init__(screen)
         self._custom_font: CustomFont = CustomFont()
+        self._player1_quiz_state: QuizState = QuizState(Character.RYU)
+        self._player2_quiz_state: QuizState = QuizState(Character.RYU, True)
         self._quiz: Quiz = Quiz()
         self._questions: List[dict] = []
         self._selected_option: int = 0
@@ -30,6 +33,7 @@ class QuizScreen(Screen):
         self._selected_difficulty_index: int = 0
         self._player_difficulties: dict = {1: QuizDifficulty.EASY,
                                            2: QuizDifficulty.EASY}
+        self._quiz_ended: bool = False
 
     def _load_questions(self):
         difficulty = self._player_difficulties[self._current_player]
@@ -51,8 +55,14 @@ class QuizScreen(Screen):
 
             elif event.type == self._next_question_event:
                 set_timer(self._next_question_event, 0)
-                self._is_answered = False
-                self.next_question()
+                if self._current_player == 2 and self._is_answered:
+                    self._quiz_ended = True
+                if not self._quiz_ended:
+                    self._is_answered = False
+                    self._next_question()
+
+            if self._quiz_ended:
+                return ScreenType.GAMEPLAY.name
 
     def _handle_difficulty_selection(self, event: Event):
         if event.key == K_UP:
@@ -76,7 +86,7 @@ class QuizScreen(Screen):
         self._selected_option = 0
         self._is_answered = False
 
-    def next_question(self):
+    def _next_question(self):
         self._current_player = 2 if self._current_player == 1 else 1
         self._current_question_index = 0
         self._selected_difficulty_index = 0
@@ -92,10 +102,24 @@ class QuizScreen(Screen):
         elif event.key == K_RETURN and not self._is_answered:
             self._is_answered = True
             self._feedback_time = get_ticks()
-            if self._selected_option == self._correct_option:
-                print(f"Jogador {self._current_player}: Resposta correta!")
-            else:
-                print(f"Jogador {self._current_player}: Resposta errada!")
+
+            is_correct_option: bool = self._selected_option == self._correct_option
+            is_second_player: bool = self._current_player == 2
+            difficulty: QuizDifficulty = self._player_difficulties[self._current_player]
+            quiz_player_state: QuizState = self._player1_quiz_state
+            score: int = self._quiz.get_score(difficulty)
+            percentage_balance: float = self._quiz.get_percentage_balance(difficulty)
+
+            if is_second_player:
+                quiz_player_state = self._player2_quiz_state
+            if not is_correct_option:
+                score = 0
+                percentage_balance = -percentage_balance
+
+            quiz_player_state.increase_score(score)
+            quiz_player_state.set_percentage_balance(percentage_balance)
+            print(quiz_player_state.get_score())
+            print(quiz_player_state.get_percentage_balance())
             set_timer(self._next_question_event, self._feedback_duration)
 
     def render(self):
@@ -226,10 +250,15 @@ class QuizScreen(Screen):
         for i, option in enumerate(self._options):
             letter = 'a)' if i == 0 else 'b)' if i == 1 else 'c)' if i == 2 else 'd)'
             option = f'{letter} {option}'
+            is_correct_option: bool = self._selected_option == self._correct_option
+
             if self._is_answered:
-                option = 'Errado! -10% de vida e dano causado!'
-                if self._correct_option:
-                    option = 'Correto! +10% de vida e dano causado!'
+                difficulty: QuizDifficulty = self._player_difficulties[self._current_player]
+                percentage_balance: float = self._quiz.get_percentage_balance(difficulty)
+                percentage: int = int(percentage_balance * 100)
+                option = f'Errado! -{percentage}% de vida e -{percentage}% de dano causado!'
+                if is_correct_option:
+                    option = f'Correto! +{percentage}% de vida e +{percentage}% de dano causado!'
 
             option_lines = self._wrap_text(option, 12, screen_width - 100)
             option_rect = Rect(50, options_start_y + i * option_height, screen_width - 100,
@@ -247,7 +276,7 @@ class QuizScreen(Screen):
                 text_color = (255, 255, 255)
                 if self._is_answered:
                     text_color = (255, 0, 0)
-                    if self._selected_option == self._correct_option:
+                    if is_correct_option:
                         text_color = (0, 255, 0)
                 option_line_text = font.render_font(
                     text=line,
@@ -264,7 +293,7 @@ class QuizScreen(Screen):
                 selected_option_color = (255, 255, 255)
                 if self._is_answered:
                     selected_option_color = (255, 0, 0)
-                    if self._selected_option == self._correct_option:
+                    if is_correct_option:
                         selected_option_color = (0, 255, 0)
             if show_rectangle:
                 draw.rect(self.screen, selected_option_color, option_rect.inflate(40, 40), 5)
