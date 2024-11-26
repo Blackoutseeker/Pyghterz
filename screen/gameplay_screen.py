@@ -81,27 +81,33 @@ class GameplayScreen(Screen):
     def _handle_players_health(self):
         player1_health: float = self._player1_state.get_health()
         player2_health: float = self._player2_state.get_health()
+        player1_sprite_index: int = self._player1_state.get_sprite_index()
+        player2_sprite_index: int = self._player2_state.get_sprite_index()
 
         if player1_health <= 0 and player2_health <= 0:
-            self._double_defeat = True
-            self._round_ended = True
-            self._player1_state.set_lose(True)
-            self._player2_state.set_lose(True)
-            self._player1_state.set_player_action(PlayerAction.DEFEAT)
-            self._player2_state.set_player_action(PlayerAction.DEFEAT)
+            if player1_sprite_index == 0 and player2_sprite_index == 0:
+                self._double_defeat = True
+                self._round_ended = True
+                self._player1_state.set_lose(True)
+                self._player2_state.set_lose(True)
+                self._player1_state.set_player_action(PlayerAction.DEFEAT)
+                self._player2_state.set_player_action(PlayerAction.DEFEAT)
             return
         if player1_health <= 0 or player2_health <= 0:
-            self._round_ended = True
+            if player1_sprite_index == 0 or player2_sprite_index == 0:
+                self._round_ended = True
         if player1_health <= 0:
-            self._player1_state.set_lose(True)
-            self._player2_state.set_win(True)
-            self._player1_state.set_player_action(PlayerAction.DEFEAT)
-            self._player2_state.set_player_action(PlayerAction.WIN)
+            if player2_sprite_index == 0:
+                self._player1_state.set_lose(True)
+                self._player2_state.set_win(True)
+                self._player1_state.set_player_action(PlayerAction.DEFEAT)
+                self._player2_state.set_player_action(PlayerAction.WIN)
         if player2_health <= 0:
-            self._player2_state.set_lose(True)
-            self._player1_state.set_win(True)
-            self._player2_state.set_player_action(PlayerAction.DEFEAT)
-            self._player1_state.set_player_action(PlayerAction.WIN)
+            if player1_sprite_index == 0:
+                self._player2_state.set_lose(True)
+                self._player1_state.set_win(True)
+                self._player2_state.set_player_action(PlayerAction.DEFEAT)
+                self._player1_state.set_player_action(PlayerAction.WIN)
 
     def _handle_reset(self):
         self._round_ended = False
@@ -118,7 +124,7 @@ class GameplayScreen(Screen):
                 exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self._audio_manager.dispose()
+                    self._handle_reset()
                     return ScreenType.MAIN_MENU.name
             elif event.type == self._reset_event:
                 self._handle_reset()
