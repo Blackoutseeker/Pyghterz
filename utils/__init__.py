@@ -3,6 +3,7 @@ from .player_action import PlayerAction
 from .dimentions import Dimensions
 from .config import Config
 from .moveset_stats import MoveSetStats, MovementSpeed, AttackDamage
+from .quiz import QuizDifficulty, Quiz
 
 __all__ = ['Character',
            'PlayerAction',
@@ -10,5 +11,7 @@ __all__ = ['Character',
            'Config',
            'MoveSetStats',
            'MovementSpeed',
-           'AttackDamage'
+           'AttackDamage',
+           'QuizDifficulty',
+           'Quiz'
            ]
