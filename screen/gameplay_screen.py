@@ -105,6 +105,8 @@ class GameplayScreen(Screen):
 
     def _handle_reset(self):
         self._round_ended = False
+        self._double_defeat = False
+        self._is_players_colliding = False
         self._player1_state.reset_all_states()
         self._player2_state.reset_all_states()
 
