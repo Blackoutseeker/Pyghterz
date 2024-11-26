@@ -51,9 +51,13 @@ class Hitbox:
         is_player_getting_hit: bool = (self._player_state.get_is_getting_weak_hit() or
                                        self._player_state.get_is_getting_medium_hit() or
                                        self._player_state.get_is_getting_high_hit())
+        player_wins: bool = self._player_state.get_win()
+        player_loses: bool = self._player_state.get_lose()
         is_valid_player_action: bool = self._player_state.get_player_action() in self._valid_player_actions
-        if is_player_getting_hit:
+
+        if is_player_getting_hit or player_wins or player_loses:
             self._dismiss_attack_rectangle()
+
         if is_player_attacking and not is_player_getting_hit and is_valid_player_action:
             sprite_index = self._player_state.get_sprite_index()
             player_action = self._player_state.get_player_action()
