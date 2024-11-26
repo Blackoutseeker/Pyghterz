@@ -2,6 +2,7 @@ from pygame import Surface
 from .screen import ScreenType
 from .main_menu_screen import MainMenuScreen
 from .gameplay_screen import GameplayScreen
+from .quiz_screen import QuizScreen
 from typing import List
 from pygame.event import Event
 
@@ -11,7 +12,8 @@ class ScreenManager:
         self.screen = screen
         self._screens: dict = {
             f'{ScreenType.MAIN_MENU.name}': MainMenuScreen(screen),
-            f'{ScreenType.GAMEPLAY.name}': GameplayScreen(screen)
+            f'{ScreenType.GAMEPLAY.name}': GameplayScreen(screen),
+            f'{ScreenType.QUIZ.name}': QuizScreen(screen),
         }
         self._current_screen: str = ScreenType.MAIN_MENU.name
 
