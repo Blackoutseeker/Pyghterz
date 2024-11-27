@@ -11,6 +11,7 @@ from pygame.event import Event
 from sys import exit
 from input import QuizKeymap
 from pygame.time import get_ticks, set_timer
+from audio import AudioManager, SoundType
 
 
 class QuizScreen(Screen):
@@ -52,6 +53,10 @@ class QuizScreen(Screen):
         background_path = path.join(base_path, background_path)
         background_image: Surface = load_image(background_path)
         return background_image
+
+    @staticmethod
+    def _play_sound(sound_type: SoundType):
+        AudioManager.play_sound_by_type(sound_type)
 
     def handle_events(self, events: List[Event]):
         for event in events:
@@ -100,14 +105,17 @@ class QuizScreen(Screen):
 
         if event.key == player_keys.UP.value:
             self._selected_difficulty_index = (self._selected_difficulty_index - 1) % len(self._difficulty_options)
+            self._play_sound(SoundType.OPTION_CHANGE)
         elif event.key == player_keys.DOWN.value:
             self._selected_difficulty_index = (self._selected_difficulty_index + 1) % len(self._difficulty_options)
+            self._play_sound(SoundType.OPTION_CHANGE)
         elif event.key in player_keys.CONFIRM_BUTTONS.value:
             selected_difficulty = self._difficulty_options[self._selected_difficulty_index]
             self._player_difficulties[self._current_player] = selected_difficulty
             self._is_selecting_difficulty = False
             self._load_questions()
             self._load_current_question()
+            self._play_sound(SoundType.SELECTED)
 
     def _load_current_question(self):
         if self._current_question_index >= len(self._questions):
@@ -136,9 +144,13 @@ class QuizScreen(Screen):
 
         if event.key == player_keys.UP.value and not self._is_answered:
             self._selected_option = (self._selected_option - 1) % len(self._options)
+            self._play_sound(SoundType.OPTION_CHANGE)
         elif event.key == player_keys.DOWN.value and not self._is_answered:
             self._selected_option = (self._selected_option + 1) % len(self._options)
+            self._play_sound(SoundType.OPTION_CHANGE)
         elif event.key in player_keys.CONFIRM_BUTTONS.value and not self._is_answered:
+            self._play_sound(SoundType.SELECTED)
+
             self._is_answered = True
             self._feedback_time = get_ticks()
 
