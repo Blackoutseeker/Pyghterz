@@ -1,7 +1,7 @@
 from .screen import Screen, ScreenType
-from pygame import Surface, QUIT, quit, KEYDOWN, K_ESCAPE, K_UP, K_DOWN, K_RETURN, Rect, draw, USEREVENT
+from pygame import Surface, QUIT, quit, KEYDOWN, K_ESCAPE, Rect, draw, USEREVENT
 from state import QuizState
-from utils import Character, Dimensions, Quiz, QuizDifficulty
+from utils import Dimensions, Quiz, QuizDifficulty
 from font import CustomFont
 from random import shuffle
 from typing import List
@@ -12,11 +12,11 @@ from pygame.time import get_ticks, set_timer
 
 
 class QuizScreen(Screen):
-    def __init__(self, screen: Surface):
+    def __init__(self, screen: Surface, player1_quiz_state: QuizState, player2_quiz_state: QuizState):
         super().__init__(screen)
+        self._player1_quiz_state: QuizState = player1_quiz_state
+        self._player2_quiz_state: QuizState = player2_quiz_state
         self._custom_font: CustomFont = CustomFont()
-        self._player1_quiz_state: QuizState = QuizState(Character.RYU)
-        self._player2_quiz_state: QuizState = QuizState(Character.RYU, True)
         self._quiz: Quiz = Quiz()
         self._questions: List[dict] = []
         self._selected_option: int = 0
@@ -131,8 +131,6 @@ class QuizScreen(Screen):
 
             quiz_player_state.increase_score(score)
             quiz_player_state.set_percentage_balance(percentage_balance)
-            print(quiz_player_state.get_score())
-            print(quiz_player_state.get_percentage_balance())
             set_timer(self._next_question_event, self._feedback_duration)
 
     def render(self):
