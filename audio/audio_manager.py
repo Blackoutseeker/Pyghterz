@@ -1,5 +1,5 @@
 import pygame
-import os
+from os import path
 from .sound_enum import SoundType
 
 
@@ -7,6 +7,8 @@ class AudioManager:
     def __init__(self):
         pygame.mixer.init()
         self._background_music = None
+        self._option_change_sound = None
+        self._selected_sound = None
         self.character_sounds = {}
         self.volume = 0.6
 
@@ -18,8 +20,8 @@ class AudioManager:
             print(f"error to load assets: {e}")
 
     def load_music(self):
-        music_path = os.path.join('assets', 'sounds', 'theme_background.mp3')
-        if os.path.exists(music_path):
+        music_path = path.join('assets', 'sounds', 'theme_background.mp3')
+        if path.exists(music_path):
             self._background_music = music_path
         else:
             print("theme_background not found")
@@ -38,8 +40,8 @@ class AudioManager:
         for character in characters:
             self.character_sounds[character] = []
             for sound_type in sounds_type:
-                sound_path = os.path.join('assets', 'sounds', character, f"{sound_type.name.lower()}.mp3")
-                if os.path.exists(sound_path):
+                sound_path = path.join('assets', 'sounds', character, f"{sound_type.name.lower()}.mp3")
+                if path.exists(sound_path):
                     sound = pygame.mixer.Sound(sound_path)
                     self.character_sounds[character].append(sound)
 
@@ -53,6 +55,14 @@ class AudioManager:
             pygame.mixer.music.load(self._background_music)
             pygame.mixer.music.play(-1)
             pygame.mixer.music.set_volume(self.volume)
+
+    @staticmethod
+    def play_sound_by_type(sound_type: SoundType):
+        base_path: str = path.dirname(path.dirname(__file__))
+        sound_path: str = f'assets/sounds/menu/{sound_type.value}.mp3'
+        sound_path = path.join(base_path, sound_path)
+        sound: pygame.mixer.Sound = pygame.mixer.Sound(sound_path)
+        sound.play()
 
     @staticmethod
     def dispose():
