@@ -27,6 +27,7 @@ class PlayerState:
         self._attacks_damage: dict = MoveSetStats(self._character).get_attacks_damage()
         self._health: int = Config.DEFAULT_PLAYER_HEALTH.value
         self._maximum_health: int = self._health
+        self._score: int = 0
         self._win: bool = False
         self._lose: bool = False
 
@@ -120,9 +121,11 @@ class PlayerState:
 
     def update_states_by_quiz(self, player_quiz_state: QuizState):
         percentage_balance: float = player_quiz_state.get_percentage_balance()
+        score: int = player_quiz_state.get_score()
         self._attacks_damage = MoveSetStats(self._character).update_attacks_damage(percentage_balance)
         self._health += (self._health * percentage_balance)
         self._maximum_health = self._health
+        self._score = score
 
     def get_maximum_health(self) -> int:
         return self._maximum_health
@@ -132,6 +135,12 @@ class PlayerState:
 
     def decrease_health(self, value: float):
         self._health -= value
+
+    def get_score(self) -> int:
+        return self._score
+
+    def increase_score(self, score: int):
+        self._score += score
 
     def get_win(self) -> bool:
         return self._win
@@ -160,5 +169,6 @@ class PlayerState:
         self._sprite_index = 0
         self._animation_update_time = 0
         self._health = self._maximum_health
+        self._score = 0
         self._win = False
         self._lose = False
