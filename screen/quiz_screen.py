@@ -267,9 +267,10 @@ class QuizScreen(Screen):
                 difficulty: QuizDifficulty = self._player_difficulties[self._current_player]
                 percentage_balance: float = self._quiz.get_percentage_balance(difficulty)
                 percentage: int = int(percentage_balance * 100)
+                score: int = self._quiz.get_score(difficulty)
                 option = f'Errado! -{percentage}% de vida e -{percentage}% de dano causado!'
                 if is_correct_option:
-                    option = f'Correto! +{percentage}% de vida e +{percentage}% de dano causado!'
+                    option = f'Correto! +{percentage}% de vida e +{percentage}% de dano causado! +{score} pontos!'
 
             option_lines = self._wrap_text(option, 12, screen_width - 100)
             option_rect = Rect(50, options_start_y + i * option_height, screen_width - 100,
