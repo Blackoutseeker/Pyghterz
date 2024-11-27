@@ -75,7 +75,21 @@ class QuizScreen(Screen):
                     self._next_question()
 
             if self._quiz_ended:
+                self._reset_quiz()
                 return ScreenType.GAMEPLAY.name
+
+    def _reset_quiz(self):
+        self._is_answered: bool = False
+        self._current_player: int = 1
+        self._next_question_event: int = USEREVENT + 2
+        self._feedback_duration: int = 5000
+        self._feedback_time: int = 0
+        self._is_selecting_difficulty: bool = True
+        self._difficulty_options: List[QuizDifficulty] = list(QuizDifficulty)
+        self._selected_difficulty_index: int = 0
+        self._player_difficulties: dict = {1: QuizDifficulty.EASY,
+                                           2: QuizDifficulty.EASY}
+        self._quiz_ended: bool = False
 
     def _handle_difficulty_selection(self, event: Event):
         player_keys = QuizKeymap.Player1
