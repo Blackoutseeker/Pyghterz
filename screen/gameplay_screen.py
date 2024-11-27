@@ -138,7 +138,7 @@ class GameplayScreen(Screen):
         if not self._updated_player_states:
             self._player1_state.update_states_by_quiz(self._player1_quiz_state)
             self._player2_state.update_states_by_quiz(self._player2_quiz_state)
-            self._hud.update_healths()
+            self._hud.update_states()
             self._audio_manager.play_background_music()
             self._updated_player_states = True
 

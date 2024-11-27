@@ -1,5 +1,6 @@
 from enum import Enum
 from pygame import Surface, image, Rect, transform, draw
+from font import CustomFont
 from state import PlayerState
 from utils import Dimensions, Config
 from os import path
@@ -14,12 +15,15 @@ class _HealthBarColor(Enum):
 class Hud:
     def __init__(self, screen: Surface, player1_state: PlayerState, player2_state: PlayerState):
         self._screen: Surface = screen
+        self._font: CustomFont = CustomFont()
         self._player1_state: PlayerState = player1_state
         self._player1_health: float = player1_state.get_health()
         self._player1_maximum_health: float = player1_state.get_maximum_health()
+        self._player1_score: int = player1_state.get_score()
         self._player2_state: PlayerState = player2_state
         self._player2_health: float = player2_state.get_health()
         self._player2_maximum_health: float = player2_state.get_maximum_health()
+        self._player2_score: int = player2_state.get_score()
 
         self._player1_portrait: Surface = Surface((0, 0))
         self._player2_portrait: Surface = Surface((0, 0))
@@ -60,11 +64,13 @@ class Hud:
         hud_image_flipped = transform.flip(hud_image, True, False)
         self._player2_health_bar = hud_image_flipped
 
-    def update_healths(self):
+    def update_states(self):
         self._player1_health = self._player1_state.get_health()
         self._player1_maximum_health = self._player1_state.get_maximum_health()
+        self._player1_score = self._player1_state.get_score()
         self._player2_health = self._player2_state.get_health()
         self._player2_maximum_health = self._player2_state.get_maximum_health()
+        self._player2_score = self._player2_state.get_score()
 
     def render(self):
         self._screen.blit(self._player1_portrait, (16, 24))
@@ -96,6 +102,16 @@ class Hud:
         player2_health_bar_width: int = self._player2_health_bar.get_width()
         player2_health_bar_position_x: float = Dimensions.SCREEN_WIDTH.value - (player2_health_bar_width + 10)
         self._screen.blit(self._player2_health_bar, (player2_health_bar_position_x, 10))
+
+        player1_score: str = str(self._player1_state.get_score())
+        player2_score: str = str(self._player2_state.get_score())
+
+        player1_score_font = self._font.render_font(
+            player1_score, 14, (0, 0, 0), (0, 0))
+        player2_score_font = self._font.render_font(
+            player2_score, 14, (0, 0, 0), (0, 0))
+        self._screen.blit(player1_score_font, (74, 4))
+        self._screen.blit(player2_score_font, ((Dimensions.SCREEN_WIDTH.value // 2) + 30, 4))
 
     @staticmethod
     def _get_health_bar_color_based_on_health(health: float, maximum_health: int) -> tuple[int, int, int]:
