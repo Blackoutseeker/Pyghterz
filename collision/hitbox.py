@@ -1,4 +1,4 @@
-from utils import Character, PlayerAction, Config
+from utils import Character, Dimensions, PlayerAction, Config
 from state import PlayerState
 from pygame import Surface, Rect, draw
 from typing import List
@@ -14,6 +14,9 @@ class Hitbox:
         self._body_rectangle: Rect = Rect(0, 0, 0, 0)
         self._attack_rectangle: Rect = Rect(0, 0, 0, 0)
         self._attack_hitboxes: dict = self._get_attack_hitboxes()
+        self._left_wall_rectangle: Rect = Rect(0, 0, 20, Dimensions.SCREEN_HEIGHT.value)
+        self._right_wall_rectangle: Rect = Rect(Dimensions.SCREEN_WIDTH.value - 20, 0,
+                                                20, Dimensions.SCREEN_WIDTH.value)
         self._counter: int = 0
         self._valid_player_actions: List[PlayerAction] = [
             PlayerAction.WEAK_PUNCH,
@@ -27,6 +30,7 @@ class Hitbox:
     def render(self):
         self._render_body_hitbox()
         self._render_attack_hitbox()
+        self._render_walls()
 
     def get_body_rectangle(self) -> Rect:
         return self._body_rectangle
@@ -34,9 +38,17 @@ class Hitbox:
     def get_attack_rectangle(self) -> Rect:
         return self._attack_rectangle
 
+    def get_wall_rectangles(self) -> List[Rect]:
+        return [self._left_wall_rectangle, self._right_wall_rectangle]
+
     def _get_attack_hitboxes(self) -> dict:
         attack_hitboxes = CharacterHitbox.get_attack_hitboxes(self._character)
         return attack_hitboxes
+
+    def _render_walls(self):
+        if Config.DEBUG.value:
+            draw.rect(self._screen, (0, 0, 255), self._left_wall_rectangle, 3)
+            draw.rect(self._screen, (0, 0, 255), self._right_wall_rectangle, 3)
 
     def _render_body_hitbox(self):
         player_position_x, player_position_y = self._player_state.get_player_position()
