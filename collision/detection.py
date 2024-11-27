@@ -128,6 +128,17 @@ class Detection:
                 new_player1_position_x = player1_previous_position_x + 4
                 new_player2_position_x = player2_previous_position_x - 4
 
+            is_player1_colliding_width_left_wall: bool = self.detect_if_player_is_colliding_with_wall(player1_body_rect)
+            is_player2_colliding_width_right_wall: bool = (
+                self.detect_if_player_is_colliding_with_wall(player2_body_rect, True))
+
+            is_players_colliding: bool = self.get_players_collision(player1_body_rect, player2_body_rect)
+            if is_player1_facing_right:
+                if is_player1_colliding_width_left_wall and is_players_colliding\
+                        or (is_player2_colliding_width_right_wall and is_players_colliding):
+                    new_player1_position_x = player1_previous_position_x
+                    new_player2_position_x = player2_previous_position_x
+
             self._player1_state.set_player_position_x(new_player1_position_x)
             self._player2_state.set_player_position_x(new_player2_position_x)
 
@@ -136,4 +147,18 @@ class Detection:
         is_players_colliding: bool = False
         if player1_body_rect.colliderect(player2_body_rect):
             is_players_colliding = True
+        return is_players_colliding
+
+    def get_players_collision_with_wall(self, player1_body_rect: Rect, player2_body_rect: Rect) -> bool:
+        is_players_colliding: bool = False
+        left_wall_rectangle, right_wall_rectangle = self._hitbox.get_wall_rectangles()
+        is_players_colliding_with_themselves: bool = self.get_players_collision(player1_body_rect, player2_body_rect)
+
+        is_player1_colliding_with_left_wall: bool = player1_body_rect.colliderect(left_wall_rectangle)
+        is_player2_colliding_with_right_wall: bool = player2_body_rect.colliderect(right_wall_rectangle)
+
+        if is_players_colliding_with_themselves:
+            if is_player1_colliding_with_left_wall or is_player2_colliding_with_right_wall:
+                is_players_colliding = True
+
         return is_players_colliding
