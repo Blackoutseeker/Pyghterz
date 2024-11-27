@@ -1,5 +1,5 @@
 from .screen import Screen, ScreenType
-from pygame import Surface, QUIT, quit, KEYDOWN, K_ESCAPE, K_RETURN, Rect, draw
+from pygame import Surface, QUIT, quit, KEYDOWN, K_ESCAPE, Rect, draw
 from font import CustomFont
 from os import path
 from pygame.image import load as load_image
