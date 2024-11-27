@@ -33,6 +33,14 @@ class MoveSetStats:
     def get_attacks_damage(self) -> dict:
         return self._attacks_damage
 
+    def update_attacks_damage(self, percentage_balance: float = 0) -> dict:
+        attacks_damage = {}
+        for name, value in self._attacks_damage.items():
+            damage_value = (value * percentage_balance) + value
+            attacks_damage[name] = damage_value
+            print(damage_value)
+        return attacks_damage
+
     def get_initial_position(self) -> List[int]:
         return [self._initial_position_x, self._initial_position_y]
 
