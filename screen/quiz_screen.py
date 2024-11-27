@@ -5,6 +5,8 @@ from utils import Dimensions, Quiz, QuizDifficulty
 from font import CustomFont
 from random import shuffle
 from typing import List
+from os import path
+from pygame.image import load as load_image
 from pygame.event import Event
 from sys import exit
 from input import QuizKeymap
@@ -16,6 +18,8 @@ class QuizScreen(Screen):
         super().__init__(screen)
         self._player1_quiz_state: QuizState = player1_quiz_state
         self._player2_quiz_state: QuizState = player2_quiz_state
+        self._background_image1: Surface = self._load_background(1)
+        self._background_image2: Surface = self._load_background(2)
         self._custom_font: CustomFont = CustomFont()
         self._quiz: Quiz = Quiz()
         self._questions: List[dict] = []
@@ -40,6 +44,14 @@ class QuizScreen(Screen):
         difficulty = self._player_difficulties[self._current_player]
         self._questions = self._quiz.get_questions(difficulty)
         shuffle(self._questions)
+
+    @staticmethod
+    def _load_background(player_number: int) -> Surface:
+        base_path: str = path.dirname(path.dirname(__file__))
+        background_path: str = f'assets/images/sprites/quiz/BACKGROUND_{player_number}.png'
+        background_path = path.join(base_path, background_path)
+        background_image: Surface = load_image(background_path)
+        return background_image
 
     def handle_events(self, events: List[Event]):
         for event in events:
@@ -133,11 +145,19 @@ class QuizScreen(Screen):
             quiz_player_state.set_percentage_balance(percentage_balance)
             set_timer(self._next_question_event, self._feedback_duration)
 
-    def render(self):
+    def _render_background(self):
         screen_background_color: tuple[int, int, int] = (130, 31, 35)
-        if self._current_player == 2:
+        current_player: int = self._current_player
+        if current_player == 2:
             screen_background_color = (33, 91, 130)
         self.screen.fill(screen_background_color)
+        background_image: Surface = self._background_image1
+        if current_player == 2:
+            background_image = self._background_image2
+        self.screen.blit(background_image, (0, 0))
+
+    def render(self):
+        self._render_background()
         if self._is_selecting_difficulty:
             self._render_difficulty_selection()
         else:
@@ -216,10 +236,7 @@ class QuizScreen(Screen):
         return shuffled_options.index(correct_answer)
 
     def _render_question(self):
-        screen_background_color: tuple[int, int, int] = (130, 31, 35)
-        if self._current_player == 2:
-            screen_background_color = (33, 91, 130)
-        self.screen.fill(screen_background_color)
+        self._render_background()
         font = self._custom_font
 
         screen_width = Dimensions.SCREEN_WIDTH.value
