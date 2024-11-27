@@ -15,7 +15,11 @@ class Hud:
     def __init__(self, screen: Surface, player1_state: PlayerState, player2_state: PlayerState):
         self._screen: Surface = screen
         self._player1_state: PlayerState = player1_state
+        self._player1_health: float = player1_state.get_health()
+        self._player1_maximum_health: float = player1_state.get_maximum_health()
         self._player2_state: PlayerState = player2_state
+        self._player2_health: float = player2_state.get_health()
+        self._player2_maximum_health: float = player2_state.get_maximum_health()
 
         self._player1_portrait: Surface = Surface((0, 0))
         self._player2_portrait: Surface = Surface((0, 0))
@@ -56,6 +60,12 @@ class Hud:
         hud_image_flipped = transform.flip(hud_image, True, False)
         self._player2_health_bar = hud_image_flipped
 
+    def update_healths(self):
+        self._player1_health = self._player1_state.get_health()
+        self._player1_maximum_health = self._player1_state.get_maximum_health()
+        self._player2_health = self._player2_state.get_health()
+        self._player2_maximum_health = self._player2_state.get_maximum_health()
+
     def render(self):
         self._screen.blit(self._player1_portrait, (16, 24))
         player2_portrait_width: int = self._player2_portrait.get_width()
@@ -63,13 +73,17 @@ class Hud:
         self._screen.blit(self._player2_portrait, (player2_portrait_position_x, 24))
 
         player1_health: float = self._player1_state.get_health()
+        player1_maximum_health: int = self._player1_state.get_maximum_health()
         player2_health: float = self._player2_state.get_health()
+        player2_maximum_health: int = self._player2_state.get_maximum_health()
 
-        player1_health_bar_color: tuple[int, int, int] = self._get_health_bar_color_based_on_health(player1_health)
-        player2_health_bar_color: tuple[int, int, int] = self._get_health_bar_color_based_on_health(player2_health)
-        player1_health_bar_width: float = ((self._player1_state.get_health() / Config.MAXIMUM_PLAYER_HEALTH.value)
+        player1_health_bar_color: tuple[int, int, int] = (
+            self._get_health_bar_color_based_on_health(player1_health, player1_maximum_health))
+        player2_health_bar_color: tuple[int, int, int] = (
+            self._get_health_bar_color_based_on_health(player2_health, player2_maximum_health))
+        player1_health_bar_width: float = ((self._player1_state.get_health() / self._player1_maximum_health)
                                            * self._health_bar_width)
-        player2_health_bar_width: float = ((self._player2_state.get_health() / Config.MAXIMUM_PLAYER_HEALTH.value)
+        player2_health_bar_width: float = ((self._player2_state.get_health() / self._player2_maximum_health)
                                            * self._health_bar_width)
 
         self._player1_rectangle_health_bar.width = player1_health_bar_width
@@ -84,9 +98,9 @@ class Hud:
         self._screen.blit(self._player2_health_bar, (player2_health_bar_position_x, 10))
 
     @staticmethod
-    def _get_health_bar_color_based_on_health(health: float) -> tuple[int, int, int]:
-        if health == Config.MAXIMUM_PLAYER_HEALTH.value:
+    def _get_health_bar_color_based_on_health(health: float, maximum_health: int) -> tuple[int, int, int]:
+        if health == maximum_health:
             return _HealthBarColor.GREEN.value
-        elif health >= Config.MAXIMUM_PLAYER_HEALTH.value / 2:
+        elif health >= maximum_health / 2:
             return _HealthBarColor.YELLOW.value
         return _HealthBarColor.ORANGE.value
