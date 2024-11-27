@@ -18,7 +18,7 @@ class Movement:
 
     def update(self, round_ended: bool, is_players_colliding: bool,
                is_player_colliding_with_left_wall: bool, is_player_colliding_with_right_wall,
-               audio_mgr: AudioManager):
+               is_players_colliding_with_wall: bool, audio_mgr: AudioManager):
         if not round_ended:
             keys = get_pressed()
             is_player_attacking: bool = self._player_state.get_is_attacking()
@@ -56,6 +56,10 @@ class Movement:
                     if is_player_facing_right and is_player_colliding_with_left_wall:
                         if player_action == PlayerAction.MOVE_BACKWARD:
                             speed = 0
+                    if is_players_colliding_with_wall:
+                        if (is_players_colliding and player_action == PlayerAction.MOVE_FORWARD
+                                and not is_player_colliding_with_right_wall):
+                            speed = 0
                     player_position_x -= speed
                 elif keys[self._player_key.FORWARD.value]:
                     speed: int = self._move_forward_speed
@@ -69,6 +73,10 @@ class Movement:
                             speed = 0
                     if not is_player_facing_right and is_player_colliding_with_right_wall:
                         if player_action == PlayerAction.MOVE_BACKWARD:
+                            speed = 0
+                    if is_players_colliding_with_wall:
+                        if (is_players_colliding and player_action == PlayerAction.MOVE_FORWARD
+                                and not is_player_colliding_with_left_wall):
                             speed = 0
                     player_position_x += speed
 

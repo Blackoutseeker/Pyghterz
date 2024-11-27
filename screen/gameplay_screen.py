@@ -153,12 +153,15 @@ class GameplayScreen(Screen):
             self._detection.detect_if_player_is_colliding_with_wall(player2_body_rectangle))
         is_player2_colliding_with_right_wall: bool = (
             self._detection.detect_if_player_is_colliding_with_wall(player2_body_rectangle, True))
+        is_players_colliding_with_wall: bool = (
+            self._detection.get_players_collision_with_wall(player1_body_rectangle, player2_body_rectangle))
+
         self._movement1.update(self._round_ended, self._is_players_colliding,
                                is_player1_colliding_with_left_wall, is_player1_colliding_with_right_wall,
-                               self._audio_manager)
+                               is_players_colliding_with_wall, self._audio_manager)
         self._movement2.update(self._round_ended, self._is_players_colliding,
                                is_player2_colliding_with_left_wall, is_player2_colliding_with_right_wall,
-                               self._audio_manager)
+                               is_players_colliding_with_wall, self._audio_manager)
 
         # player1_position_x, player1_position_y = self._player1_state.get_player_position()
         # player2_position_x, player2_position_y = self._player2_state.get_player_position()
