@@ -1,18 +1,20 @@
+from .quiz_state import QuizState
 from utils import Character, PlayerAction, MoveSetStats, Config
 from typing import List
 from pygame.time import get_ticks
 
 
 class PlayerState:
-    def __init__(self, character: Character, is_second_player: bool = False):
-        self._character: Character = character
-        self._is_second_player: bool = is_second_player
+    def __init__(self, player_quiz_state: QuizState):
+        self._character: Character = player_quiz_state.get_character()
+        self._is_second_player: bool = player_quiz_state.get_is_second_player()
         self._player_action: PlayerAction = PlayerAction.IDLE
-        self._position_x, self._position_y = MoveSetStats(character, is_second_player).get_initial_position()
+        self._position_x, self._position_y = (MoveSetStats(self._character, self._is_second_player)
+                                              .get_initial_position())
         self._initial_position_x, self._initial_position_y = self._position_x, self._position_y
-        self._scale: float = MoveSetStats(character).get_character_scale()
-        self._scaled_body_rectangle_area: List[float] = MoveSetStats(character).get_body_rectangle_area_scaled()
-        self._scaled_body_rectangle_base: List[float] = MoveSetStats(character).get_body_rectangle_base_scaled()
+        self._scale: float = MoveSetStats(self._character).get_character_scale()
+        self._scaled_body_rectangle_area: List[float] = MoveSetStats(self._character).get_body_rectangle_area_scaled()
+        self._scaled_body_rectangle_base: List[float] = MoveSetStats(self._character).get_body_rectangle_base_scaled()
         self._is_attacking: bool = False
         self._is_facing_right: bool = True
         self._is_blocking: bool = False
@@ -21,9 +23,10 @@ class PlayerState:
         self._is_getting_high_hit: bool = False
         self._sprite_index: int = 0
         self._animation_update_time: float = 0
-        self._movements_speed: dict = MoveSetStats(character).get_movements_speed()
-        self._attacks_damage: dict = MoveSetStats(character).get_attacks_damage()
-        self._health: int = Config.MAXIMUM_PLAYER_HEALTH.value
+        self._movements_speed: dict = MoveSetStats(self._character).get_movements_speed()
+        self._attacks_damage: dict = MoveSetStats(self._character).get_attacks_damage()
+        self._health: int = Config.DEFAULT_PLAYER_HEALTH.value
+        self._maximum_health: int = self._health
         self._win: bool = False
         self._lose: bool = False
 
@@ -115,6 +118,15 @@ class PlayerState:
     def get_health(self) -> float:
         return self._health
 
+    def update_states_by_quiz(self, player_quiz_state: QuizState):
+        percentage_balance: float = player_quiz_state.get_percentage_balance()
+        self._attacks_damage = MoveSetStats(self._character).update_attacks_damage(percentage_balance)
+        self._health += (self._health * percentage_balance)
+        self._maximum_health = self._health
+
+    def get_maximum_health(self) -> int:
+        return self._maximum_health
+
     def increase_health(self, value: float):
         self._health += value
 
@@ -139,14 +151,14 @@ class PlayerState:
     def reset_all_states(self):
         self._player_action: PlayerAction = PlayerAction.IDLE
         self._position_x, self._position_y = self._initial_position_x, self._initial_position_y
-        self._is_attacking: bool = False
-        self._is_facing_right: bool = True
-        self._is_blocking: bool = False
-        self._is_getting_weak_hit: bool = False
-        self._is_getting_medium_hit: bool = False
-        self._is_getting_high_hit: bool = False
-        self._sprite_index: int = 0
-        self._animation_update_time: float = 0
-        self._health: int = Config.MAXIMUM_PLAYER_HEALTH.value
-        self._win: bool = False
-        self._lose: bool = False
+        self._is_attacking = False
+        self._is_facing_right = True
+        self._is_blocking = False
+        self._is_getting_weak_hit = False
+        self._is_getting_medium_hit = False
+        self._is_getting_high_hit = False
+        self._sprite_index = 0
+        self._animation_update_time = 0
+        self._health = self._maximum_health
+        self._win = False
+        self._lose = False
