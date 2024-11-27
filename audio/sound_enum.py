@@ -8,3 +8,6 @@ class SoundType(Enum):
     WEAK_KICK = 3
     MEDIUM_KICK = 4
     HIGH_KICK = 5
+
+    OPTION_CHANGE = 'OPTION_CHANGE'
+    SELECTED = 'SELECTED'
