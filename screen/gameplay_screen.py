@@ -133,6 +133,7 @@ class GameplayScreen(Screen):
                 self._handle_reset()
                 pygame.time.set_timer(self._reset_event, 0)
                 self._event_created = False
+                return ScreenType.QUIZ.name
 
     def render(self):
         if not self._updated_player_states:
