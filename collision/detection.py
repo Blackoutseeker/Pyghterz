@@ -1,13 +1,15 @@
-from pygame import Rect
 from state import PlayerState
+from pygame import Rect, Surface
 from typing import List
 from utils import PlayerAction
+from .hitbox import Hitbox
 
 
 class Detection:
-    def __init__(self, player1_state: PlayerState, player2_state: PlayerState):
+    def __init__(self, player1_state: PlayerState, player2_state: PlayerState, screen: Surface):
         self._player1_state: PlayerState = player1_state
         self._player2_state: PlayerState = player2_state
+        self._hitbox: Hitbox = Hitbox(player1_state.get_character(), player1_state, screen)
         self._hit_speed: int = 2
         self._valid_player_actions: List[PlayerAction] = [
             PlayerAction.WEAK_PUNCH,
@@ -22,6 +24,15 @@ class Detection:
                          player1_attack_rect: Rect, player2_attack_rect: Rect):
         self._detect_attack_collision(player1_body_rect, player2_body_rect, player1_attack_rect, player2_attack_rect)
         self._detect_body_collision(player1_body_rect, player2_body_rect)
+
+    def detect_if_player_is_colliding_with_wall(self, player_body_rect: Rect, check_right_wall: bool = False) -> bool:
+        is_player_colliding_with_wall: bool = False
+        left_wall_rectangle, right_wall_rectangle = self._hitbox.get_wall_rectangles()
+        if player_body_rect.colliderect(left_wall_rectangle) and not check_right_wall:
+            is_player_colliding_with_wall = True
+        if player_body_rect.colliderect(right_wall_rectangle) and check_right_wall:
+            is_player_colliding_with_wall = True
+        return is_player_colliding_with_wall
 
     def _detect_attack_collision(self, player1_body_rect: Rect, player2_body_rect: Rect,
                                  player1_attack_rect: Rect, player2_attack_rect: Rect):
