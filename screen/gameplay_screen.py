@@ -1,7 +1,7 @@
 from .screen import Screen, ScreenType
 import pygame
 from sys import exit
-from state import PlayerState, Scenery, Viewport
+from state import QuizState, PlayerState, Scenery, Viewport
 from sprite import Animation, Hud
 from utils import Config, Character, PlayerAction
 from input import Movement
@@ -12,7 +12,7 @@ from typing import List
 
 
 class GameplayScreen(Screen):
-    def __init__(self, screen: pygame.Surface):
+    def __init__(self, screen: pygame.Surface, player1_quiz_state: QuizState, player2_quiz_state: QuizState):
         super().__init__(screen)
         self._screen = screen
 
@@ -24,8 +24,12 @@ class GameplayScreen(Screen):
         self._scenery_speed = Config.SCENERY_SPEED.value
 
         self._scenery = Scenery(self._scenery_scale, self._scenery_speed, self._screen)
-        self._player1_state = PlayerState(Character.RYU)
-        self._player2_state = PlayerState(Character.RYU, True)
+
+        self._player1_quiz_state = player1_quiz_state
+        self._player2_quiz_state = player2_quiz_state
+        self._player1_state = PlayerState(player1_quiz_state)
+        self._player2_state = PlayerState(player2_quiz_state)
+        self._updated_player_states: bool = False
 
         self._animation1 = Animation(Character.RYU, self._animation_speed, self._screen, self._player1_state)
         self._animation2 = Animation(Character.RYU, self._animation_speed, self._screen, self._player2_state)
@@ -41,7 +45,6 @@ class GameplayScreen(Screen):
 
         self._audio_manager = AudioManager()
         self._audio_manager.load()
-        # self._audio_manager.play_background_music()
 
         self._round_ended: bool = False
         self._double_defeat: bool = False
@@ -132,11 +135,18 @@ class GameplayScreen(Screen):
                 self._event_created = False
 
     def render(self):
+        if not self._updated_player_states:
+            self._player1_state.update_states_by_quiz(self._player1_quiz_state)
+            self._player2_state.update_states_by_quiz(self._player2_quiz_state)
+            self._hud.update_healths()
+            self._audio_manager.play_background_music()
+            self._updated_player_states = True
+
         self._movement1.update(self._round_ended, self._is_players_colliding, self._audio_manager)
         self._movement2.update(self._round_ended, self._is_players_colliding, self._audio_manager)
 
-        player1_position_x, player1_position_y = self._player1_state.get_player_position()
-        player2_position_x, player2_position_y = self._player2_state.get_player_position()
+        # player1_position_x, player1_position_y = self._player1_state.get_player_position()
+        # player2_position_x, player2_position_y = self._player2_state.get_player_position()
 
         # self._viewport.update(player1_position_x, player2_position_x, Dimensions.WORLD_WIDTH.value)
         self._scenery.render(0, 0, self._viewport)
