@@ -90,8 +90,15 @@ class Detection:
                 player_attacking_previous_x, _ = player_state.get_player_position()
                 is_player_getting_hit_facing_right: bool = player_state.get_is_facing_right()
                 new_player_getting_hit_position: float = player_attacking_previous_x + self._hit_speed
+
+                is_player1_colliding_with_wall: bool = self.detect_if_player_is_colliding_with_wall(player1_body_rect)
+                is_player2_colliding_with_wall: bool = (
+                    self.detect_if_player_is_colliding_with_wall(player2_body_rect, True))
+
                 if is_player_getting_hit_facing_right:
                     new_player_getting_hit_position = player_attacking_previous_x - self._hit_speed
+                if is_player1_colliding_with_wall or is_player2_colliding_with_wall:
+                    new_player_getting_hit_position = player_attacking_previous_x
                 if not is_player_blocking:
                     player_state.set_player_position_x(new_player_getting_hit_position)
         else:
