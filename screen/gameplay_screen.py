@@ -40,7 +40,7 @@ class GameplayScreen(Screen):
         self._player1_hitbox = Hitbox(Character.RYU, self._player1_state, self._screen)
         self._player2_hitbox = Hitbox(Character.RYU, self._player2_state, self._screen)
 
-        self._detection = Detection(self._player1_state, self._player2_state)
+        self._detection = Detection(self._player1_state, self._player2_state, self._screen)
         self._hud = Hud(self._screen, self._player1_state, self._player2_state)
 
         self._audio_manager = AudioManager()
@@ -142,8 +142,23 @@ class GameplayScreen(Screen):
             self._audio_manager.play_background_music()
             self._updated_player_states = True
 
-        self._movement1.update(self._round_ended, self._is_players_colliding, self._audio_manager)
-        self._movement2.update(self._round_ended, self._is_players_colliding, self._audio_manager)
+        player1_body_rectangle = self._player1_hitbox.get_body_rectangle()
+        player2_body_rectangle = self._player2_hitbox.get_body_rectangle()
+
+        is_player1_colliding_with_left_wall: bool = (
+            self._detection.detect_if_player_is_colliding_with_wall(player1_body_rectangle))
+        is_player1_colliding_with_right_wall: bool = (
+            self._detection.detect_if_player_is_colliding_with_wall(player1_body_rectangle, True))
+        is_player2_colliding_with_left_wall: bool = (
+            self._detection.detect_if_player_is_colliding_with_wall(player2_body_rectangle))
+        is_player2_colliding_with_right_wall: bool = (
+            self._detection.detect_if_player_is_colliding_with_wall(player2_body_rectangle, True))
+        self._movement1.update(self._round_ended, self._is_players_colliding,
+                               is_player1_colliding_with_left_wall, is_player1_colliding_with_right_wall,
+                               self._audio_manager)
+        self._movement2.update(self._round_ended, self._is_players_colliding,
+                               is_player2_colliding_with_left_wall, is_player2_colliding_with_right_wall,
+                               self._audio_manager)
 
         # player1_position_x, player1_position_y = self._player1_state.get_player_position()
         # player2_position_x, player2_position_y = self._player2_state.get_player_position()
@@ -159,9 +174,7 @@ class GameplayScreen(Screen):
         self._player1_hitbox.render()
         self._player2_hitbox.render()
 
-        player1_body_rectangle = self._player1_hitbox.get_body_rectangle()
         player1_attack_rectangle = self._player1_hitbox.get_attack_rectangle()
-        player2_body_rectangle = self._player2_hitbox.get_body_rectangle()
         player2_attack_rectangle = self._player2_hitbox.get_attack_rectangle()
 
         self._detection.detect_collision(player1_body_rectangle, player2_body_rectangle,

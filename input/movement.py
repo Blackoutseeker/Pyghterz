@@ -16,7 +16,9 @@ class Movement:
         if is_second_player:
             self._player_key = Keymap.Player2
 
-    def update(self, round_ended: bool, is_players_colliding: bool, audio_mgr: AudioManager):
+    def update(self, round_ended: bool, is_players_colliding: bool,
+               is_player_colliding_with_left_wall: bool, is_player_colliding_with_right_wall,
+               audio_mgr: AudioManager):
         if not round_ended:
             keys = get_pressed()
             is_player_attacking: bool = self._player_state.get_is_attacking()
@@ -37,7 +39,7 @@ class Movement:
                     if not is_player_attacking and not is_player_getting_hit and not is_player_facing_right:
                         self._player_state.set_is_blocking(True)
                         player_action = PlayerAction.BLOCK
- 
+
             if not is_player_attacking and not is_player_getting_hit and not is_player_blocking:
                 if keys[self._player_key.JUMP.value]:
                     # self._position_y -= speed
@@ -51,6 +53,9 @@ class Movement:
                     if not self._player_state.get_is_facing_right():
                         player_action = PlayerAction.MOVE_FORWARD
                         speed = self._move_forward_speed
+                    if is_player_facing_right and is_player_colliding_with_left_wall:
+                        if player_action == PlayerAction.MOVE_BACKWARD:
+                            speed = 0
                     player_position_x -= speed
                 elif keys[self._player_key.FORWARD.value]:
                     speed: int = self._move_forward_speed
@@ -61,6 +66,9 @@ class Movement:
                     another_player_action: PlayerAction = self._another_player_state.get_player_action()
                     if is_players_colliding:
                         if another_player_action == PlayerAction.MOVE_FORWARD:
+                            speed = 0
+                    if not is_player_facing_right and is_player_colliding_with_right_wall:
+                        if player_action == PlayerAction.MOVE_BACKWARD:
                             speed = 0
                     player_position_x += speed
 
