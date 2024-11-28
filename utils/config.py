@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class Config(Enum):
-    DEBUG = True
+    DEBUG = False
     FPS = 60
     ANIMATION_SPEED = 70
     SCENERY_SCALE = 3.0
