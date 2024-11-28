@@ -15,16 +15,18 @@ class MainMenuScreen(Screen):
     def __init__(self, screen: Surface):
         super().__init__(screen)
         self._custom_font: CustomFont = CustomFont()
-        self._background_image: Surface = self._load_background_image()
+        self._background_image: Surface = self._load_image('BACKGROUND')
+        self._keymap_image: Surface = self._load_image('KEYMAP')
+        self._show_keymap: bool = False
         self._current_button: int = 0
 
     @staticmethod
-    def _load_background_image() -> Surface:
+    def _load_image(image_name: str) -> Surface:
         base_path: str = path.dirname(path.dirname(__file__))
-        background_path: str = f'assets/images/sprites/menu/BACKGROUND.png'
-        background_path = path.join(base_path, background_path)
-        background_image: Surface = load_image(background_path)
-        return background_image
+        image_path: str = f'assets/images/sprites/menu/{image_name}.png'
+        image_path = path.join(base_path, image_path)
+        image: Surface = load_image(image_path)
+        return image
 
     @staticmethod
     def _play_sound_by_type(sound_type: SoundType):
@@ -39,24 +41,35 @@ class MainMenuScreen(Screen):
                 player1_keys = QuizKeymap.Player1
 
                 if event.key == K_ESCAPE:
-                    quit()
-                    exit()
+                    if self._show_keymap:
+                        self._play_sound_by_type(SoundType.SELECTED)
+                        self._show_keymap = False
+                    else:
+                        quit()
+                        exit()
 
-                elif event.key == player1_keys.UP.value:
+                elif event.key == player1_keys.UP.value and not self._show_keymap:
                     self._current_button = (self._current_button - 1) % 3
                     self._play_sound_by_type(SoundType.OPTION_CHANGE)
-                elif event.key == player1_keys.DOWN.value:
+                elif event.key == player1_keys.DOWN.value and not self._show_keymap:
                     self._current_button = (self._current_button + 1) % 3
                     self._play_sound_by_type(SoundType.OPTION_CHANGE)
 
-                elif event.key in player1_keys.CONFIRM_BUTTONS.value:
+                elif event.key in player1_keys.CONFIRM_BUTTONS.value and not self._show_keymap:
                     if self._current_button == 0:
                         self._play_sound_by_type(SoundType.SELECTED)
                         return ScreenType.QUIZ.name
+                    elif self._current_button == 1:
+                        self._play_sound_by_type(SoundType.SELECTED)
+                        self._show_keymap = True
                     elif self._current_button == 2:
                         self._play_sound_by_type(SoundType.SELECTED)
                         quit()
                         exit()
+
+                elif event.key in player1_keys.CANCEL_BUTTONS.value and self._show_keymap:
+                    self._play_sound_by_type(SoundType.SELECTED)
+                    self._show_keymap = False
 
     def render(self):
         white_color: tuple[int, int, int] = (255, 255, 255)
@@ -95,3 +108,6 @@ class MainMenuScreen(Screen):
 
         third_button_y = second_button_y + rectangle_height + spacing
         draw_button('Sair', center_position_x, third_button_y, 2)
+
+        if self._show_keymap:
+            self.screen.blit(self._keymap_image, (0, 0))
