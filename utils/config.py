@@ -9,3 +9,4 @@ class Config(Enum):
     SCENERY_SPEED = 0.06
     HEALTH_BAR_WIDTH = 280
     DEFAULT_PLAYER_HEALTH = 500
+    VERSION = 'v1.1.0'
