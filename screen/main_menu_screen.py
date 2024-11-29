@@ -1,5 +1,5 @@
 from .screen import Screen, ScreenType
-from pygame import Surface, QUIT, quit, KEYDOWN, K_ESCAPE, Rect, draw
+from pygame import Surface, QUIT, quit, KEYDOWN, K_ESCAPE, K_RETURN, Rect, draw
 from font import CustomFont
 from os import path
 from pygame.image import load as load_image
@@ -39,6 +39,7 @@ class MainMenuScreen(Screen):
                 exit()
             elif event.type == KEYDOWN:
                 player1_keys = QuizKeymap.Player1
+                player2_keys = QuizKeymap.Player2
 
                 if event.key == K_ESCAPE:
                     if self._show_keymap:
@@ -48,14 +49,18 @@ class MainMenuScreen(Screen):
                         quit()
                         exit()
 
-                elif event.key == player1_keys.UP.value and not self._show_keymap:
+                elif ((event.key == player1_keys.UP.value or event.key == player2_keys.UP.value)
+                      and not self._show_keymap):
                     self._current_button = (self._current_button - 1) % 3
                     self._play_sound_by_type(SoundType.OPTION_CHANGE)
-                elif event.key == player1_keys.DOWN.value and not self._show_keymap:
+                elif ((event.key == player1_keys.DOWN.value or event.key == player2_keys.DOWN.value)
+                      and not self._show_keymap):
                     self._current_button = (self._current_button + 1) % 3
                     self._play_sound_by_type(SoundType.OPTION_CHANGE)
 
-                elif event.key in player1_keys.CONFIRM_BUTTONS.value and not self._show_keymap:
+                elif (event.key in player1_keys.CONFIRM_BUTTONS.value or
+                      event.key in player2_keys.CONFIRM_BUTTONS.value or
+                      event.key == K_RETURN) and not self._show_keymap:
                     if self._current_button == 0:
                         self._play_sound_by_type(SoundType.SELECTED)
                         return ScreenType.QUIZ.name
@@ -67,7 +72,8 @@ class MainMenuScreen(Screen):
                         quit()
                         exit()
 
-                elif event.key in player1_keys.CANCEL_BUTTONS.value and self._show_keymap:
+                elif (event.key in player1_keys.CANCEL_BUTTONS.value or
+                      event.key in player2_keys.CANCEL_BUTTONS.value) and self._show_keymap:
                     self._play_sound_by_type(SoundType.SELECTED)
                     self._show_keymap = False
 
