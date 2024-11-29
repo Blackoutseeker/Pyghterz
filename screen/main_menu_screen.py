@@ -8,7 +8,7 @@ from typing import List
 from pygame.event import Event
 from input import QuizKeymap
 from audio import SoundType, AudioManager
-from utils import Dimensions
+from utils import Dimensions, Config
 
 
 class MainMenuScreen(Screen):
@@ -84,6 +84,9 @@ class MainMenuScreen(Screen):
 
         self.screen.fill(white_color)
         self.screen.blit(self._background_image, (0, 0))
+
+        version_font = self._custom_font.render_font(Config.VERSION.value, 12, black_color, (0, 0))
+        self.screen.blit(version_font, (20, Dimensions.SCREEN_HEIGHT.value - 30))
 
         center_position_x = Dimensions.SCREEN_WIDTH.value // 2
         center_position_y = Dimensions.SCREEN_HEIGHT.value // 2
